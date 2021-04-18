@@ -89,13 +89,10 @@ class NotesRepository {
     for (int i = 0; i < notes.length; i++) {
       Map<String, dynamic> json = {};
 
-      switch (notes[i].type) {
-        case NoteType.Text:
-          json = (notes[i] as TextData).toJson();
-          break;
-        case NoteType.Todo:
-          json = (notes[i] as TodoData).toJson();
-          break;
+      if (notes[i] is TextData) {
+        json = (notes[i] as TextData).toJson();
+      } else if (notes[i] is TodoData) {
+        json = (notes[i] as TodoData).toJson();
       }
 
       final storageKey = _storageKeyNote + i.toString();
@@ -123,7 +120,7 @@ class NotesRepository {
       storageDetails: Map.fromIterable(
         notes,
         key: (_) => index++,
-        value: (e) => e.type,
+        value: (e) => e is TextData ? NoteType.Text : NoteType.Todo,
       ),
     );
 

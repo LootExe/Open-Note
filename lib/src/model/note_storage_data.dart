@@ -4,6 +4,11 @@ import './note_data.dart';
 
 part 'note_storage_data.g.dart';
 
+enum NoteType {
+  Todo,
+  Text,
+}
+
 @JsonSerializable()
 class NoteStorageData {
   Map<int, NoteType> storageDetails;

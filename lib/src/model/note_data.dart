@@ -1,14 +1,14 @@
-enum NoteType {
-  Todo,
-  Text,
-}
+//import 'package:equatable/equatable.dart';
 
 abstract class NoteData {
+  //extends Equatable {
   String title;
-  NoteType type;
   DateTime editTime;
 
-  NoteData({required this.title, required this.type, required this.editTime});
+  //@override
+  //List<Object> get props => [title, editTime];
+
+  NoteData({required this.title, required this.editTime});
 
   NoteData clone();
 }

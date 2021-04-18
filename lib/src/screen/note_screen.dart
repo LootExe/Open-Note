@@ -51,7 +51,7 @@ class _NoteState extends State<NoteScreen> {
                 ),
               ],
             ),
-            body: state.note.type == NoteType.Text
+            body: state.note is TextData
                 ? _TextNote(state.note as TextData)
                 : _TodoNote(state.note as TodoData),
           );

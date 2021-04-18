@@ -8,9 +8,12 @@ part 'text_data.g.dart';
 class TextData extends NoteData {
   String text;
 
+  //@override
+  //List<Object> get props => [title, editTime, text];
+
   TextData(
       {required String title, required DateTime editTime, required this.text})
-      : super(title: title, type: NoteType.Text, editTime: editTime);
+      : super(title: title, editTime: editTime);
 
   TextData.clone(TextData original)
       : this(

@@ -9,7 +9,7 @@ part 'note_event.dart';
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final NotesRepository _repository;
   final NoteData note;
-  late final NoteData _originalNote;
+  late NoteData _originalNote;
 
   NoteBloc({required NotesRepository repository, required this.note})
       : this._repository = repository,

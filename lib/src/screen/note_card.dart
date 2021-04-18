@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../model/note_data.dart';
+import '../model/text_data.dart';
+import '../model/todo_data.dart';
 
 class NoteCard extends StatelessWidget {
   final NoteData _data;
@@ -44,7 +46,7 @@ class NoteCard extends StatelessWidget {
       child: InkWell(
         onTap: () => _onPressed(),
         child: ListTile(
-          leading: Icon(_noteTypeToIcon(_data.type)),
+          leading: Icon(_noteTypeToIcon(_data)),
           title: Text(_data.title),
           subtitle: Text(
               'Last edited: ${DateFormat('hh:mm - dd.MM.yyyy').format(_data.editTime)}'),
@@ -53,13 +55,11 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  IconData _noteTypeToIcon(NoteType type) {
-    switch (type) {
-      case NoteType.Todo:
-        return Icons.check_circle_outline_sharp;
-      case NoteType.Text:
-        return Icons.notes;
-    }
+  IconData _noteTypeToIcon(NoteData note) {
+    if (note is TextData) {
+      return Icons.notes;
+    } else
+      return Icons.check_circle_outline_sharp;
   }
 
   Future<bool?> _showDeleteDialog(BuildContext context) async {

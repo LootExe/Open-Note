@@ -11,7 +11,7 @@ class TodoData extends NoteData {
 
   TodoData(
       {required String title, required DateTime editTime, required this.items})
-      : super(title: title, type: NoteType.Todo, editTime: editTime);
+      : super(title: title, editTime: editTime);
 
   factory TodoData.fromJson(Map<String, dynamic> json) =>
       _$TodoDataFromJson(json);
