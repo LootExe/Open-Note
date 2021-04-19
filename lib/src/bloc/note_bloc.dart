@@ -29,12 +29,12 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   }
 
   Stream<NoteState> _mapNoteUpdatedToState() async* {
-    // TODO: Only update and write notes if something has changed
-    // Compare items? Save state on opening note?
-    note.editTime = DateTime.now();
-    _originalNote = note.clone();
+    if (note.compareTo(_originalNote) == false) {
+      note.editTime = DateTime.now();
+      _originalNote = note.clone();
 
-    await _repository.writeNotes();
+      await _repository.writeNotes();
+    }
 
     yield NoteUpdateSuccess(note);
   }

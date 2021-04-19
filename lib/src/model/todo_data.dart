@@ -30,4 +30,27 @@ class TodoData extends NoteData {
 
     return TodoData(title: title, editTime: editTime, items: itemList);
   }
+
+  @override
+  bool compareTo(NoteData data) {
+    if (data is TodoData && data.title == title && _compareItems(data.items)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _compareItems(List<TodoItem> items) {
+    if (items.length != this.items.length) {
+      return false;
+    }
+
+    for (int i = 0; i < items.length; i++) {
+      if (!items[i].compareTo(this.items[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

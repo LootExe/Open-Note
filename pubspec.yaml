@@ -34,12 +34,12 @@ dependencies:
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
   json_annotation: ^4.0.1
-  equatable: ^2.0.0
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  test: ^1.16.5
   build_runner: ^1.12.2
   json_serializable: ^4.1.0
 

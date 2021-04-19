@@ -12,4 +12,7 @@ class TodoItem {
   factory TodoItem.fromJson(Map<String, dynamic> json) =>
       _$TodoItemFromJson(json);
   Map<String, dynamic> toJson() => _$TodoItemToJson(this);
+
+  bool compareTo(TodoItem item) =>
+      item.text == text && item.isChecked == isChecked;
 }

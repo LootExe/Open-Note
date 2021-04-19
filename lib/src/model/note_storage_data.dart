@@ -1,7 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import './note_data.dart';
-
 part 'note_storage_data.g.dart';
 
 enum NoteType {

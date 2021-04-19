@@ -8,9 +8,6 @@ part 'text_data.g.dart';
 class TextData extends NoteData {
   String text;
 
-  //@override
-  //List<Object> get props => [title, editTime, text];
-
   TextData(
       {required String title, required DateTime editTime, required this.text})
       : super(title: title, editTime: editTime);
@@ -27,4 +24,13 @@ class TextData extends NoteData {
 
   @override
   TextData clone() => TextData(editTime: editTime, title: title, text: text);
+
+  @override
+  bool compareTo(NoteData data) {
+    if (data is TextData && data.title == title && data.text == text) {
+      return true;
+    }
+
+    return false;
+  }
 }
