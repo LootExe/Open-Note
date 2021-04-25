@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import './rename_dialog.dart';
 import '../repository/notes_repository.dart';
 import '../bloc/note_bloc.dart';
 import '../model/note_data.dart';
@@ -41,12 +42,36 @@ class _NoteState extends State<NoteScreen> {
                   Navigator.pop(context);
                 },
               ),
-              actions: <Widget>[
-                IconButton(
-                  padding: const EdgeInsets.only(right: 24.0),
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () {
-                    // TODO: Show popup menu depending on note type
+              actions: [
+                PopupMenuButton(
+                  itemBuilder: (context) => <PopupMenuEntry>[
+                    PopupMenuItem(
+                      child: const ListTile(
+                        leading: const Icon(Icons.edit),
+                        title: const Text('Rename'),
+                      ),
+                      value: 'Rename',
+                    ),
+                    PopupMenuItem(
+                      child: const ListTile(
+                        leading: const Icon(Icons.delete),
+                        title: const Text('Delete'),
+                      ),
+                      value: 'Delete',
+                    ),
+                  ],
+                  onSelected: (value) async {
+                    // TODO: Add maybe enum as value for popup buttons
+                    // Add rename dialog
+                    if (value == 'Rename') {
+                      String? s = await RenameDialog.show(
+                        context: context,
+                        currentName: state.note.title,
+                      );
+
+                      // TODO: Take care of return value, could be null
+                      print(s);
+                    }
                   },
                 ),
               ],

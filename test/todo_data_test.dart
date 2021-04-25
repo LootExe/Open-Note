@@ -1,7 +1,6 @@
 import 'package:test/test.dart';
 
 import '../lib/src/model/todo_data.dart';
-import '../lib/src/model/todo_item.dart';
 
 void main() {
   group('TodoData compareTo', () {

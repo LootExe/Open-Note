@@ -3,21 +3,26 @@ part of 'note_list_bloc.dart';
 abstract class NoteListState {
   final List<NoteData> notes;
 
-  const NoteListState(this.notes);
+  NoteListState(this.notes) {
+    _sortNotesByTime(notes);
+  }
+
+  void _sortNotesByTime(List<NoteData> noteList) =>
+      noteList.sort((a, b) => b.editTime.compareTo(a.editTime));
 }
 
 class NoteListInitial extends NoteListState {
-  const NoteListInitial(List<NoteData> notes) : super(notes);
+  NoteListInitial(List<NoteData> notes) : super(notes);
 }
 
 class NoteListLoadSuccess extends NoteListState {
-  const NoteListLoadSuccess(List<NoteData> notes) : super(notes);
+  NoteListLoadSuccess(List<NoteData> notes) : super(notes);
 }
 
 class NoteListUpdateSuccess extends NoteListState {
-  const NoteListUpdateSuccess(List<NoteData> notes) : super(notes);
+  NoteListUpdateSuccess(List<NoteData> notes) : super(notes);
 }
 
 class NoteListItemDeleteSuccess extends NoteListState {
-  const NoteListItemDeleteSuccess(List<NoteData> notes) : super(notes);
+  NoteListItemDeleteSuccess(List<NoteData> notes) : super(notes);
 }

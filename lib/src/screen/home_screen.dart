@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import '../repository/notes_repository.dart';
-import '../bloc/note_list_bloc.dart';
 import '../model/note_data.dart';
+import '../model/text_data.dart';
+import '../model/todo_data.dart';
 import './settings_screen.dart';
 import './note_screen.dart';
-import './note_card.dart';
+import './note_list.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
       floatingActionButton: _buildActionButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: NoteList(),
     );
   }
@@ -34,22 +38,33 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  FloatingActionButton _buildActionButton(BuildContext context) {
-    return FloatingActionButton(
-      child: const Icon(Icons.add),
-      onPressed: () {
-        // TODO: Add new card function
-        /* PopupMenuButton(
-          child: Center(child: Text('click here')),
-          itemBuilder: (context) {
-            return List.generate(3, (index) {
-              return PopupMenuItem(
-                child: Text('button no $index'),
-              );
-            });
-          },
-        ); */
-      },
+  Widget _buildActionButton(BuildContext context) {
+    final buttonSize = SpeedDial().buttonSize;
+    final double xPos = (MediaQuery.of(context).size.width - buttonSize) / 2;
+    final buttonColor = Theme.of(context).accentColor;
+
+    return SpeedDial(
+      icon: Icons.add,
+      backgroundColor: buttonColor,
+      buttonSize: buttonSize,
+      marginEnd: xPos,
+      overlayColor: Theme.of(context).colorScheme.surface,
+      children: [
+        SpeedDialChild(
+          child: const Icon(Icons.check_circle_outline_sharp),
+          backgroundColor: buttonColor,
+          label: 'Todo Note',
+          labelStyle: const TextStyle(fontSize: 18.0, color: Colors.black),
+          onTap: () => _newNotePressed(context, NoteType.Todo),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.notes),
+          backgroundColor: buttonColor,
+          label: 'Text Note',
+          labelStyle: const TextStyle(fontSize: 18.0, color: Colors.black),
+          onTap: () => _newNotePressed(context, NoteType.Text),
+        ),
+      ],
     );
   }
 
@@ -60,51 +75,24 @@ class HomeScreen extends StatelessWidget {
           builder: (_) => SettingsScreen(),
         ));
   }
-}
 
-class NoteList extends StatefulWidget {
-  @override
-  _NoteListState createState() => _NoteListState();
-}
+  void _newNotePressed(BuildContext context, NoteType type) {
+    NoteData note;
 
-class _NoteListState extends State<NoteList> {
-  late NoteListBloc notesBloc;
+    switch (type) {
+      case NoteType.Todo:
+        note = TodoData(title: 'New Note', editTime: DateTime.now(), items: []);
+        break;
+      case NoteType.Text:
+        note = TextData(title: 'New Note', editTime: DateTime.now(), text: '');
+        break;
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    notesBloc = NoteListBloc(RepositoryProvider.of<NotesRepository>(context));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<NoteListBloc, NoteListState>(
-      bloc: notesBloc,
-      builder: (context, state) {
-        return ListView.builder(
-          padding: const EdgeInsets.only(top: 12.0),
-          itemCount: state.notes.length,
-          itemBuilder: (context, index) => NoteCard(
-            data: state.notes[index],
-            onPressed: () {
-              _noteCardPressed(state.notes[index]);
-            },
-            onDissmissed: () {
-              BlocProvider.of<NoteListBloc>(context)
-                ..add(NoteListItemDeleted(state.notes[index]));
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _noteCardPressed(NoteData note) {
     Navigator.push(
         context,
         CupertinoPageRoute(
           builder: (_) => NoteScreen(note),
         ))
-      ..then((_) => notesBloc.add(NoteListUpdated()));
+      ..then((_) => setState(() => {}));
   }
 }

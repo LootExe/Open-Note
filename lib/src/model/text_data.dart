@@ -10,7 +10,7 @@ class TextData extends NoteData {
 
   TextData(
       {required String title, required DateTime editTime, required this.text})
-      : super(title: title, editTime: editTime);
+      : super(title: title, type: NoteType.Text, editTime: editTime);
 
   TextData.clone(TextData original)
       : this(

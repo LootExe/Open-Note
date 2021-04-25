@@ -29,14 +29,10 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
   }
 
   Stream<NoteListState> _mapNotesLoadedToState() async* {
-    _sortNotesByTime(notes);
-
     yield NoteListLoadSuccess(notes);
   }
 
   Stream<NoteListState> _mapNotesUpdatedToState() async* {
-    _sortNotesByTime(notes);
-
     yield NoteListUpdateSuccess(notes);
   }
 
@@ -47,7 +43,4 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
 
     yield NoteListItemDeleteSuccess(notes);
   }
-
-  void _sortNotesByTime(List<NoteData> noteList) =>
-      noteList.sort((a, b) => b.editTime.compareTo(a.editTime));
 }

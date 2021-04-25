@@ -1,35 +1,47 @@
 import '../provider/storage_provider.dart';
-import '../model/note_storage_data.dart';
 import '../model/note_data.dart';
 import '../model/text_data.dart';
 import '../model/todo_data.dart';
 
 class NotesRepository {
-  static const String _storageKeyScheme = 'scheme';
-  static const String _storageKeyNote = 'note';
+  static const String _storageKey = 'notes';
 
   List<NoteData> notes = [];
+
+  NoteData? _jsonToNoteData(Map<String, dynamic> json) {
+    if (json.isEmpty) {
+      return null;
+    }
+
+    try {
+      final type = json['type'];
+
+      final noteType =
+          NoteType.values.firstWhere((e) => e.toString() == 'NoteType.' + type);
+
+      switch (noteType) {
+        case NoteType.Todo:
+          return TodoData.fromJson(json);
+        case NoteType.Text:
+          return TextData.fromJson(json);
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<bool> readNotes() async {
     notes.clear();
 
-    final NoteStorageData scheme = await _readStorageScheme();
+    final jsonList = await StorageProvider.readJsonList(_storageKey);
 
-    for (var entry in scheme.storageDetails.entries) {
-      final storageKey = _storageKeyNote + entry.key.toString();
-      final json = await StorageProvider.readData(storageKey);
+    jsonList.forEach((json) {
+      final note = _jsonToNoteData(json);
 
-      if (json.isNotEmpty) {
-        switch (entry.value) {
-          case NoteType.Text:
-            notes.add(TextData.fromJson(json));
-            break;
-          case NoteType.Todo:
-            notes.add(TodoData.fromJson(json));
-            break;
-        }
+      if (note != null) {
+        notes.add(note);
       }
-    }
+    });
 
     /* notes = [
       TextData(
@@ -84,46 +96,8 @@ class NotesRepository {
   }
 
   Future<bool> writeNotes() async {
-    await _writeStorageScheme();
+    final jsonList = notes.map((e) => e.toJson()).toList();
 
-    for (int i = 0; i < notes.length; i++) {
-      Map<String, dynamic> json = {};
-
-      if (notes[i] is TextData) {
-        json = (notes[i] as TextData).toJson();
-      } else if (notes[i] is TodoData) {
-        json = (notes[i] as TodoData).toJson();
-      }
-
-      final storageKey = _storageKeyNote + i.toString();
-
-      await StorageProvider.saveData(storageKey, json);
-    }
-
-    return true;
-  }
-
-  Future<NoteStorageData> _readStorageScheme() async {
-    final json = await StorageProvider.readData(_storageKeyScheme);
-
-    if (json.isNotEmpty) {
-      return NoteStorageData.fromJson(json);
-    }
-
-    return NoteStorageData(storageDetails: {});
-  }
-
-  Future<bool> _writeStorageScheme() async {
-    int index = 0;
-
-    final scheme = NoteStorageData(
-      storageDetails: Map.fromIterable(
-        notes,
-        key: (_) => index++,
-        value: (e) => e is TextData ? NoteType.Text : NoteType.Todo,
-      ),
-    );
-
-    return await StorageProvider.saveData(_storageKeyScheme, scheme.toJson());
+    return await StorageProvider.writeJsonList(_storageKey, jsonList);
   }
 }

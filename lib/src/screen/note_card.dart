@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import './delete_dialog.dart';
 import '../model/note_data.dart';
 import '../model/text_data.dart';
-import '../model/todo_data.dart';
 
 class NoteCard extends StatelessWidget {
   final NoteData _data;
@@ -23,7 +23,7 @@ class NoteCard extends StatelessWidget {
     return Dismissible(
       key: UniqueKey(),
       direction: DismissDirection.startToEnd,
-      confirmDismiss: (_) => _showDeleteDialog(context),
+      confirmDismiss: (_) => DeleteDialog.show(context: context),
       onDismissed: (_) => _onDissmissed(),
       background: Container(
         margin: const EdgeInsets.only(top: 10.0, bottom: 2.0),
@@ -60,26 +60,5 @@ class NoteCard extends StatelessWidget {
       return Icons.notes;
     } else
       return Icons.check_circle_outline_sharp;
-  }
-
-  Future<bool?> _showDeleteDialog(BuildContext context) async {
-    return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Card'),
-        content: const Text('Are you sure you want to delete the card?'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () => Navigator.of(context).pop(true),
-          ),
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(false),
-          ),
-        ],
-      ),
-    );
   }
 }

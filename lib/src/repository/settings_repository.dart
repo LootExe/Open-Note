@@ -7,10 +7,16 @@ class SettingsRepository {
   SettingsData settings = SettingsData();
 
   Future<bool> readSettings() async {
-    final json = await StorageProvider.readData(_storageKey);
+    final json = await StorageProvider.readJson(_storageKey);
 
-    if (json.isNotEmpty) {
+    if (json.isEmpty) {
+      return false;
+    }
+
+    try {
       settings = SettingsData.fromJson(json);
+    } catch (e) {
+      return false;
     }
 
     return true;
@@ -19,6 +25,6 @@ class SettingsRepository {
   Future<bool> writeSettings() async {
     final json = settings.toJson();
 
-    return await StorageProvider.saveData(_storageKey, json);
+    return await StorageProvider.writeJson(_storageKey, json);
   }
 }

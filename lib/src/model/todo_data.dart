@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import './note_data.dart';
-import './todo_item.dart';
 
 part 'todo_data.g.dart';
 
@@ -11,7 +10,7 @@ class TodoData extends NoteData {
 
   TodoData(
       {required String title, required DateTime editTime, required this.items})
-      : super(title: title, editTime: editTime);
+      : super(title: title, type: NoteType.Todo, editTime: editTime);
 
   factory TodoData.fromJson(Map<String, dynamic> json) =>
       _$TodoDataFromJson(json);
@@ -53,4 +52,19 @@ class TodoData extends NoteData {
 
     return true;
   }
+}
+
+@JsonSerializable()
+class TodoItem {
+  String text;
+  bool isChecked;
+
+  TodoItem({required this.text, required this.isChecked});
+
+  factory TodoItem.fromJson(Map<String, dynamic> json) =>
+      _$TodoItemFromJson(json);
+  Map<String, dynamic> toJson() => _$TodoItemToJson(this);
+
+  bool compareTo(TodoItem item) =>
+      item.text == text && item.isChecked == isChecked;
 }
