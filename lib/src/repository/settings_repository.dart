@@ -1,10 +1,10 @@
-import '../provider/storage_provider.dart';
 import '../model/settings_data.dart';
+import '../provider/storage_provider.dart';
 
 class SettingsRepository {
   static const String _storageKey = 'settings';
 
-  SettingsData settings = SettingsData();
+  var settings = SettingsData();
 
   Future<bool> readSettings() async {
     final json = await StorageProvider.readJson(_storageKey);

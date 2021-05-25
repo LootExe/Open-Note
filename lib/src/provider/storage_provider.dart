@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageProvider {
@@ -15,13 +14,15 @@ class StorageProvider {
     final data = prefs.getString(key);
     var json = Map<String, dynamic>();
 
-    if (data != null) {
-      try {
-        json = jsonDecode(data);
-      } catch (e) {}
+    if (data == null) {
+      return json;
     }
 
-    return json;
+    try {
+      json = jsonDecode(data) as Map<String, dynamic>;
+    } finally {
+      return json;
+    }
   }
 
   static Future<List<Map<String, dynamic>>> readJsonList(String key) async {
@@ -34,10 +35,10 @@ class StorageProvider {
         var json = Map<String, dynamic>();
 
         try {
-          json = jsonDecode(e);
-        } catch (e) {}
-
-        return json;
+          json = jsonDecode(e) as Map<String, dynamic>;
+        } finally {
+          return json;
+        }
       }).toList();
     }
 

@@ -1,12 +1,12 @@
-import '../provider/storage_provider.dart';
 import '../model/note_data.dart';
 import '../model/text_data.dart';
 import '../model/todo_data.dart';
+import '../provider/storage_provider.dart';
 
 class NotesRepository {
   static const String _storageKey = 'notes';
 
-  List<NoteData> notes = [];
+  final List<NoteData> notes = [];
 
   NoteData? _jsonToNoteData(Map<String, dynamic> json) {
     if (json.isEmpty) {
@@ -14,7 +14,7 @@ class NotesRepository {
     }
 
     try {
-      final type = json['type'];
+      final type = json['type'] as String;
 
       final noteType =
           NoteType.values.firstWhere((e) => e.toString() == 'NoteType.' + type);

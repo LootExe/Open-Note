@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/src/screen/rename_dialog.dart';
+import 'package:note/src/screen/widget/rename_dialog.dart';
 
 void main() {
   testWidgets(
       'Result is same as initial name when saving and without changing text',
       (WidgetTester tester) async {
     final initialName = 'Test Note';
-    String result = '';
+    String? result = '';
 
     void showRenameDialog(BuildContext context) async {
       result = await RenameDialog.show(
@@ -27,10 +27,9 @@ void main() {
     expect(result, initialName);
   });
 
-  testWidgets('Result is same as initial name when canceling',
-      (WidgetTester tester) async {
+  testWidgets('Result is null when canceling', (WidgetTester tester) async {
     final initialName = 'Test Note';
-    String result = '';
+    String? result = '';
 
     void showRenameDialog(BuildContext context) async {
       result = await RenameDialog.show(
@@ -46,14 +45,14 @@ void main() {
 
     expect(result, '');
     await tester.tap(find.text('Cancel'));
-    expect(result, initialName);
+    expect(result, null);
   });
 
   testWidgets('Result is different after changing text',
       (WidgetTester tester) async {
     final initialName = 'Test Note';
     final newName = 'New Test Name';
-    String result = '';
+    String? result = '';
 
     void showRenameDialog(BuildContext context) async {
       result = await RenameDialog.show(
@@ -74,11 +73,10 @@ void main() {
     expect(result, newName);
   });
 
-  testWidgets('Result is \'New Note\' when initial name is empty',
+  testWidgets('Result is null after clicking on barrier',
       (WidgetTester tester) async {
-    final initialName = '';
-    final newName = 'New Note';
-    String result = '';
+    final initialName = 'Test Note';
+    String? result = '';
 
     void showRenameDialog(BuildContext context) async {
       result = await RenameDialog.show(
@@ -93,8 +91,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(result, '');
-    await tester.tap(find.text('Save'));
-    expect(result, newName);
+    await tester.tap(find.byType(AppBar));
+    expect(result, null);
   });
 }
 
@@ -102,10 +100,13 @@ MaterialApp _buildAppWithDialog(Function dialogMethod) {
   return MaterialApp(
     home: Material(
       child: Builder(builder: (BuildContext context) {
-        return Center(
-          child: ElevatedButton(
-            child: const Text('X'),
-            onPressed: () => dialogMethod(context),
+        return Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: ElevatedButton(
+              child: const Text('X'),
+              onPressed: () => dialogMethod(context),
+            ),
           ),
         );
       }),

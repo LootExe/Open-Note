@@ -6,11 +6,17 @@ part 'todo_data.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TodoData extends NoteData {
-  List<TodoItem> items;
+  TodoData({
+    required String title,
+    required DateTime editTime,
+    required this.items,
+  }) : super(
+          title: title,
+          type: NoteType.Todo,
+          editTime: editTime,
+        );
 
-  TodoData(
-      {required String title, required DateTime editTime, required this.items})
-      : super(title: title, type: NoteType.Todo, editTime: editTime);
+  List<TodoItemData> items;
 
   factory TodoData.fromJson(Map<String, dynamic> json) =>
       _$TodoDataFromJson(json);
@@ -18,10 +24,10 @@ class TodoData extends NoteData {
 
   @override
   TodoData clone() {
-    final List<TodoItem> itemList = [];
+    final List<TodoItemData> itemList = [];
 
     items.forEach((item) {
-      itemList.add(TodoItem(
+      itemList.add(TodoItemData(
         isChecked: item.isChecked,
         text: item.text,
       ));
@@ -39,7 +45,7 @@ class TodoData extends NoteData {
     return false;
   }
 
-  bool _compareItems(List<TodoItem> items) {
+  bool _compareItems(List<TodoItemData> items) {
     if (items.length != this.items.length) {
       return false;
     }
@@ -55,16 +61,19 @@ class TodoData extends NoteData {
 }
 
 @JsonSerializable()
-class TodoItem {
+class TodoItemData {
+  TodoItemData({
+    required this.text,
+    required this.isChecked,
+  });
+
   String text;
   bool isChecked;
 
-  TodoItem({required this.text, required this.isChecked});
-
-  factory TodoItem.fromJson(Map<String, dynamic> json) =>
+  factory TodoItemData.fromJson(Map<String, dynamic> json) =>
       _$TodoItemFromJson(json);
   Map<String, dynamic> toJson() => _$TodoItemToJson(this);
 
-  bool compareTo(TodoItem item) =>
+  bool compareTo(TodoItemData item) =>
       item.text == text && item.isChecked == isChecked;
 }

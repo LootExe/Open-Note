@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../repository/notes_repository.dart';
 import '../model/note_data.dart';
+import '../repository/notes_repository.dart';
 
 part 'note_list_state.dart';
 part 'note_list_event.dart';
@@ -39,7 +39,7 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
   Stream<NoteListState> _mapNotesDeletedToState(
       NoteListItemDeleted event) async* {
     notes.remove(event.note);
-    _repository.writeNotes();
+    await _repository.writeNotes();
 
     yield NoteListItemDeleteSuccess(notes);
   }

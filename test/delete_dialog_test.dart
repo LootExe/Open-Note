@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/src/screen/delete_dialog.dart';
+import 'package:note/src/screen/widget/delete_dialog.dart';
 
 void main() {
   testWidgets('Result is True after clicking Yes', (WidgetTester tester) async {
@@ -44,10 +44,13 @@ MaterialApp _buildAppWithDialog(Function dialogMethod) {
   return MaterialApp(
     home: Material(
       child: Builder(builder: (BuildContext context) {
-        return Center(
-          child: ElevatedButton(
-            child: const Text('X'),
-            onPressed: () => dialogMethod(context),
+        return Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: ElevatedButton(
+              child: const Text('X'),
+              onPressed: () => dialogMethod(context),
+            ),
           ),
         );
       }),

@@ -11,7 +11,7 @@ TodoData _$TodoDataFromJson(Map<String, dynamic> json) {
     title: json['title'] as String,
     editTime: DateTime.parse(json['editTime'] as String),
     items: (json['items'] as List<dynamic>)
-        .map((e) => TodoItem.fromJson(e as Map<String, dynamic>))
+        .map((e) => TodoItemData.fromJson(e as Map<String, dynamic>))
         .toList(),
   )..type = _$enumDecode(_$NoteTypeEnumMap, json['type']);
 }
@@ -54,14 +54,15 @@ const _$NoteTypeEnumMap = {
   NoteType.Text: 'Text',
 };
 
-TodoItem _$TodoItemFromJson(Map<String, dynamic> json) {
-  return TodoItem(
+TodoItemData _$TodoItemFromJson(Map<String, dynamic> json) {
+  return TodoItemData(
     text: json['text'] as String,
     isChecked: json['isChecked'] as bool,
   );
 }
 
-Map<String, dynamic> _$TodoItemToJson(TodoItem instance) => <String, dynamic>{
+Map<String, dynamic> _$TodoItemToJson(TodoItemData instance) =>
+    <String, dynamic>{
       'text': instance.text,
       'isChecked': instance.isChecked,
     };
