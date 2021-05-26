@@ -50,6 +50,8 @@ class _TodoTaskCreatorState extends State<TodoTaskCreator> {
               ));
             }
 
+            _textController.text = '';
+
             if (widget.keepFocusAfterSubmit) {
               _focusNode.requestFocus();
             }
