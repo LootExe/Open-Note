@@ -36,9 +36,12 @@ class NoteCard extends StatelessWidget {
         margin: const EdgeInsets.only(top: 10.0, bottom: 2.0),
         color: Colors.red,
         alignment: Alignment.centerLeft,
-        child: const Padding(
+        child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Icon(Icons.delete),
+          child: Icon(
+            Icons.delete_outline,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
       ),
       child: Card(

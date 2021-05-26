@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/note_bloc.dart';
 import '../../model/text_data.dart';
 import 'delete_dialog.dart';
-import 'rename_dialog.dart';
+import 'text_field_sheet.dart';
 
 class TextNoteMenu extends StatelessWidget {
   const TextNoteMenu({
@@ -20,9 +20,10 @@ class TextNoteMenu extends StatelessWidget {
   }) async {
     switch (comand) {
       case TextMenuComand.Rename:
-        final newName = await RenameDialog.show(
+        final newName = await TextFieldSheet.show(
           context: context,
-          currentName: data.title,
+          labelText: 'New Title',
+          initialText: data.title,
         );
 
         if (newName != null && newName.isNotEmpty) {
