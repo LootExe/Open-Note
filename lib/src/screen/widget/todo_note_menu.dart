@@ -78,7 +78,7 @@ class TodoNoteMenu extends StatelessWidget {
         ),
         const PopupMenuItem(
           child: ListTile(
-            leading: Icon(Icons.delete_outline),
+            leading: Icon(Icons.circle_outlined),
             title: Text('Unmark all'),
           ),
           value: TodoMenuComand.TodoUnmarkAll,

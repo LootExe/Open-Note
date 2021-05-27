@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/note_bloc.dart';
@@ -33,13 +34,14 @@ class _TodoNoteState extends State<TodoNote>
       duration: const Duration(milliseconds: 400),
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) async {
-      await _scrollController.animateTo(
+    Timer(
+      const Duration(milliseconds: 420),
+      () => _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
-      );
-    });
+      ),
+    );
 
     BlocProvider.of<NoteBloc>(context).add(NoteUpdated());
   }

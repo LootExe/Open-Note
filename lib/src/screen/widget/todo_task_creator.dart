@@ -42,15 +42,15 @@ class _TodoTaskCreatorState extends State<TodoTaskCreator> {
           ),
           controller: _textController,
           focusNode: _focusNode,
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
+          onEditingComplete: () {
+            if (_textController.text.isNotEmpty) {
               widget.onCreated(TodoItemData(
                 isChecked: false,
-                text: value,
+                text: _textController.text,
               ));
             }
 
-            _textController.text = '';
+            _textController.clear();
 
             if (widget.keepFocusAfterSubmit) {
               _focusNode.requestFocus();
