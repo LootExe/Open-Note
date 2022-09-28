@@ -1,6 +1,5 @@
-import 'package:test/test.dart';
-
 import 'package:note/src/model/text_data.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('TextData compareTo', () {

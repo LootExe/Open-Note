@@ -12,7 +12,7 @@ class TextData extends NoteData {
     required this.text,
   }) : super(
           title: title,
-          type: NoteType.Text,
+          type: NoteType.text,
           editTime: editTime,
         );
 
@@ -20,6 +20,7 @@ class TextData extends NoteData {
 
   factory TextData.fromJson(Map<String, dynamic> json) =>
       _$TextDataFromJson(json);
+  @override
   Map<String, dynamic> toJson() => _$TextDataToJson(this);
 
   @override

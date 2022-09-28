@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -7,32 +6,27 @@ import '../bloc/note_list_bloc.dart';
 import '../model/note_data.dart';
 import '../model/text_data.dart';
 import '../model/todo_data.dart';
-import '../repository/notes_repository.dart';
 
 import 'note_screen.dart';
 import 'settings_screen.dart';
 import 'widget/note_list.dart';
-import 'widget/settings_button.dart';
 import 'widget/text_field_sheet.dart';
 
-class HomeScreen extends StatelessWidget {
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: const Text('Note'),
-      centerTitle: true,
-      actions: <Widget>[
-        SettingsButton(routeDestination: SettingsScreen()),
-      ],
-    );
-  }
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   Widget _buildActionButtons(BuildContext context) {
-    final buttonSize = SpeedDial().buttonSize;
-    final double xPos = (MediaQuery.of(context).size.width - buttonSize) / 2;
+    final buttonSize = const SpeedDial().buttonSize;
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
     final buttonColor = colorScheme.primary;
+    final foregroundColor = colorScheme.background;
     final labelColor = colorScheme.brightness == Brightness.dark
         ? theme.highlightColor
         : colorScheme.background;
@@ -40,24 +34,26 @@ class HomeScreen extends StatelessWidget {
     return SpeedDial(
       icon: Icons.add,
       backgroundColor: buttonColor,
+      foregroundColor: foregroundColor,
       buttonSize: buttonSize,
-      marginEnd: xPos,
       children: [
         SpeedDialChild(
           child: const Icon(Icons.rule),
           backgroundColor: buttonColor,
+          foregroundColor: foregroundColor,
           labelBackgroundColor: labelColor,
           label: 'Todo',
           labelStyle: const TextStyle(fontSize: 18.0),
-          onTap: () => _newNotePressed(context, NoteType.Todo),
+          onTap: () => _newNotePressed(context, NoteType.todo),
         ),
         SpeedDialChild(
           child: const Icon(Icons.description_outlined),
           backgroundColor: buttonColor,
+          foregroundColor: foregroundColor,
           labelBackgroundColor: labelColor,
           label: 'Text',
           labelStyle: const TextStyle(fontSize: 18.0),
-          onTap: () => _newNotePressed(context, NoteType.Text),
+          onTap: () => _newNotePressed(context, NoteType.text),
         ),
       ],
     );
@@ -74,46 +70,63 @@ class HomeScreen extends StatelessWidget {
       return;
     }
 
+    if (!mounted) {
+      return;
+    }
+
     NoteData note;
 
     switch (type) {
-      case NoteType.Todo:
+      case NoteType.todo:
         note = TodoData(
           title: noteName,
           editTime: DateTime.now(),
           items: [],
         );
         break;
-      case NoteType.Text:
+      case NoteType.text:
         note = TextData(
           title: noteName,
           editTime: DateTime.now(),
-          text: 'Add text here',
+          text: '',
         );
         break;
     }
 
+    final bloc = BlocProvider.of<NoteListBloc>(context);
+
     await Navigator.push(
         context,
-        CupertinoPageRoute(
+        MaterialPageRoute(
           builder: (_) => NoteScreen(data: note),
         ));
 
-    BlocProvider.of<NoteListBloc>(context).add(NoteListUpdated());
+    bloc.add(NoteListUpdated());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NoteListBloc(
-        RepositoryProvider.of<NotesRepository>(context),
-      ),
-      child: BlocBuilder<NoteListBloc, NoteListState>(
-        builder: (context, state) => Scaffold(
-          appBar: _buildAppBar(context),
-          floatingActionButton: _buildActionButtons(context),
-          body: NoteList(),
+    return BlocBuilder<NoteListBloc, NoteListState>(
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Note'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SettingsScreen(),
+                    ));
+              },
+            )
+          ],
         ),
+        floatingActionButton: _buildActionButtons(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: const NoteList(),
       ),
     );
   }

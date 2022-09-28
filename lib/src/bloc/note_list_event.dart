@@ -11,3 +11,19 @@ class NoteListItemDeleted extends NoteListEvent {
 
   NoteListItemDeleted(this.note);
 }
+
+class NoteListExported extends NoteListEvent {}
+
+class NoteListImportFilesStarted extends NoteListEvent {}
+
+class NoteListImportFilesLoaded extends NoteListEvent {
+  final List<NoteListFile> files;
+
+  NoteListImportFilesLoaded(this.files);
+}
+
+class NoteListImported extends NoteListEvent {
+  final Uri file;
+
+  NoteListImported(this.file);
+}

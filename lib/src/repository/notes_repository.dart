@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
+
 import '../model/note_data.dart';
 import '../model/text_data.dart';
 import '../model/todo_data.dart';
+import '../provider/file_provider.dart';
 import '../provider/storage_provider.dart';
 
 class NotesRepository {
@@ -14,15 +19,15 @@ class NotesRepository {
     }
 
     try {
-      final type = json['type'] as String;
+      final type = (json['type'] as String).toLowerCase();
 
       final noteType =
-          NoteType.values.firstWhere((e) => e.toString() == 'NoteType.' + type);
+          NoteType.values.firstWhere((e) => e.toString() == 'NoteType.$type');
 
       switch (noteType) {
-        case NoteType.Todo:
+        case NoteType.todo:
           return TodoData.fromJson(json);
-        case NoteType.Text:
+        case NoteType.text:
           return TextData.fromJson(json);
       }
     } catch (e) {
@@ -30,74 +35,57 @@ class NotesRepository {
     }
   }
 
-  Future<bool> readNotes() async {
+  Future<bool> readNotes([Uri? fromFile]) async {
+    String json = '';
+
+    if (fromFile == null) {
+      json = await StorageProvider.readEntry(_storageKey);
+    } else {
+      json = await FileProvider.readFile(fromFile);
+    }
+
+    if (json.isEmpty) {
+      return false;
+    }
+
     notes.clear();
 
-    final jsonList = await StorageProvider.readJsonList(_storageKey);
+    try {
+      final decodedList = jsonDecode(json);
 
-    jsonList.forEach((json) {
-      final note = _jsonToNoteData(json);
+      for (Map<String, dynamic> entry in decodedList) {
+        final note = _jsonToNoteData(entry);
 
-      if (note != null) {
-        notes.add(note);
+        if (note != null) {
+          notes.add(note);
+        }
       }
-    });
-
-    /* notes = [
-      TextData(
-        title: 'Liabilities',
-        editTime: DateTime(2021, 4, 10, 17, 30),
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
-            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ' +
-            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ' +
-            'ut aliquip ex ea commodo consequat. Duis aute irure dolor in ' +
-            'reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ' +
-            'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia ' +
-            'deserunt mollit anim id est laborum.' +
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
-            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ' +
-            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ' +
-            'ut aliquip ex ea commodo consequat. Duis aute irure dolor in ' +
-            'reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ' +
-            'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia ' +
-            'deserunt mollit anim id est laborum.' +
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
-            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ' +
-            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ' +
-            'ut aliquip ex ea commodo consequat. Duis aute irure dolor in ' +
-            'reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ' +
-            'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia ' +
-            'deserunt mollit anim id est laborum.' +
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
-            'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ' +
-            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ' +
-            'ut aliquip ex ea commodo consequat. Duis aute irure dolor in ' +
-            'reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ' +
-            'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia ' +
-            'deserunt mollit anim id est laborum.',
-      ),
-      TodoData(
-        title: 'Shopping List',
-        editTime: DateTime(2021, 4, 12, 10, 05),
-        items: [
-          TodoItem(text: 'Milk', isChecked: false),
-          TodoItem(text: 'Flour', isChecked: false),
-          TodoItem(text: 'Bread', isChecked: true),
-        ],
-      ),
-      TextData(
-        title: 'Australia',
-        editTime: DateTime(2021, 4, 2, 08, 0),
-        text: 'Phone Number: +61 456 312 494',
-      ),
-    ]; */
-
-    return true;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<bool> writeNotes() async {
-    final jsonList = notes.map((e) => e.toJson()).toList();
+  Future<bool> writeNotes([Uri? toDirectory]) async {
+    String json = '';
 
-    return await StorageProvider.writeJsonList(_storageKey, jsonList);
+    try {
+      json = jsonEncode(notes);
+    } catch (e) {
+      return false;
+    }
+
+    if (toDirectory == null) {
+      return await StorageProvider.writeEntry(_storageKey, json);
+    } else {
+      final timestamp = DateFormat('yyyyMMdd_hhmm').format(DateTime.now());
+      final filename = 'note_export_$timestamp.txt';
+
+      return await FileProvider.writeFile(
+        directory: toDirectory,
+        filename: filename,
+        content: json,
+      );
+    }
   }
 }

@@ -8,45 +8,33 @@ import '../model/text_data.dart';
 import '../model/todo_data.dart';
 import '../repository/notes_repository.dart';
 
+import 'widget/note_app_bar.dart';
 import 'widget/text_note.dart';
-import 'widget/text_note_menu.dart';
 import 'widget/todo_note.dart';
-import 'widget/todo_note_menu.dart';
 
 class NoteScreen extends StatefulWidget {
-  const NoteScreen({
-    Key? key,
-    required this.data,
-  }) : super(key: key);
+  const NoteScreen({Key? key, required this.data}) : super(key: key);
 
   final NoteData data;
 
   @override
-  _NoteScreenState createState() => _NoteScreenState();
+  State<StatefulWidget> createState() => _NoteScreenState();
 }
 
 class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
-  List<Widget> _buildMenu(BuildContext context, NoteData data) {
-    switch (data.type) {
-      case NoteType.Todo:
-        return [TodoNoteMenu(data: data as TodoData)];
-      case NoteType.Text:
-        return [TextNoteMenu(data: data as TextData)];
-    }
-  }
-
   Widget _buildBody(NoteData data) {
     switch (data.type) {
-      case NoteType.Todo:
+      case NoteType.todo:
         return TodoNote(data: data as TodoData);
-      case NoteType.Text:
+      case NoteType.text:
         return TextNote(data: data as TextData);
     }
   }
 
-  void _navigateBackToHome(BuildContext context) {
+  Future<bool> _navigateBackToHome(BuildContext context) {
     BlocProvider.of<NoteBloc>(context).add(NoteUpdated());
     Navigator.pop(context);
+    return Future.value(true);
   }
 
   @override
@@ -58,20 +46,9 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
       ),
       child: BlocBuilder<NoteBloc, NoteState>(
         builder: (context, state) => WillPopScope(
-          onWillPop: () {
-            _navigateBackToHome(context);
-            return Future.value(true);
-          },
+          onWillPop: () => _navigateBackToHome(context),
           child: Scaffold(
-            appBar: AppBar(
-              title: Text(state.note.title),
-              centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => _navigateBackToHome(context),
-              ),
-              actions: _buildMenu(context, state.note),
-            ),
+            appBar: NoteAppBar(data: widget.data),
             body: _buildBody(state.note),
           ),
         ),
@@ -82,12 +59,12 @@ class _NoteScreenState extends State<NoteScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

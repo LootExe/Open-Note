@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../bloc/note_list_bloc.dart';
 import '../bloc/settings_bloc.dart';
-import '../model/settings_data.dart';
+import 'widget/file_import_dialog.dart';
+import 'widget/settings_tile.dart';
+import 'widget/theme_settings_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  State<StatefulWidget> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  List<RadioListTile> _createRadioTiles({
-    required List<_ThemeTile> tiles,
-    required SettingsData settings,
-    required VoidCallback onChanged,
-  }) {
-    return tiles.map((tile) {
-      return RadioListTile<ThemeMode>(
-        title: Text(tile.text),
-        value: tile.mode,
-        groupValue: settings.themeMode,
-        onChanged: (value) {
-          settings.themeMode = value ?? ThemeMode.system;
-          onChanged();
-        },
-      );
-    }).toList();
+  String _themeModeToText(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return 'System default theme';
+      case ThemeMode.light:
+        return 'Always light theme';
+      case ThemeMode.dark:
+        return 'Always dark theme';
+    }
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+    );
   }
 
   @override
@@ -33,50 +39,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Container(
-        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 4.0),
         child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(
-                    left: 72.0,
-                    bottom: 16.0,
-                    top: 16.0,
-                  ),
-                  child: Text(
-                    'App Theme',
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+          builder: (context, state) => ListView(
+            itemExtent: 70.0,
+            children: [
+              SettingsTile(
+                title: 'Appearance',
+                subtitle: _themeModeToText(state.settings.themeMode),
+                onTap: () => ThemeSettingsDialog.show(context: context),
+              ),
+              BlocListener<NoteListBloc, NoteListState>(
+                listener: (context, state) {
+                  if (state is NoteListExportSuccess) {
+                    _showToast('Notes export successful');
+                  } else {
+                    _showToast('Notes export failed');
+                  }
+                },
+                listenWhen: (previous, current) =>
+                    current is NoteListExportSuccess ||
+                    current is NoteListExportFailure,
+                child: SettingsTile(
+                  title: 'Export Notes',
+                  subtitle: 'Export all notes into a file',
+                  onTap: () => BlocProvider.of<NoteListBloc>(context)
+                    ..add(NoteListExported()),
                 ),
-                ..._createRadioTiles(
-                  tiles: [
-                    _ThemeTile(text: 'System Theme', mode: ThemeMode.system),
-                    _ThemeTile(text: 'Light Theme', mode: ThemeMode.light),
-                    _ThemeTile(text: 'Dark Theme', mode: ThemeMode.dark),
-                  ],
-                  settings: state.settings,
-                  onChanged: () {
-                    BlocProvider.of<SettingsBloc>(context)
-                      ..add(SettingsChanged());
-                  },
+              ),
+              BlocListener<NoteListBloc, NoteListState>(
+                listener: (context, state) {
+                  if (state is NoteListImportFileStartFailure) {
+                    _showToast('Import cancelled');
+                  } else if (state is NoteListImportFileLoadSuccess) {
+                    if (state.files.isEmpty) {
+                      _showToast('No files found');
+                    } else {
+                      FileImportDialog.show(
+                          context: context, files: state.files);
+                    }
+                  } else if (state is NoteListImportSuccess) {
+                    _showToast('Import successful');
+                  } else if (state is NoteListImportFailure) {
+                    _showToast('Import failed');
+                  }
+                },
+                listenWhen: (previous, current) =>
+                    current is NoteListImportFileLoadSuccess ||
+                    current is NoteListImportFileStartFailure ||
+                    current is NoteListImportSuccess ||
+                    current is NoteListImportFailure,
+                child: SettingsTile(
+                  title: 'Import Notes',
+                  subtitle: 'Import notes from a file',
+                  onTap: () => BlocProvider.of<NoteListBloc>(context)
+                    ..add(NoteListImportFilesStarted()),
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-class _ThemeTile {
-  const _ThemeTile({
-    required this.text,
-    required this.mode,
-  });
-
-  final String text;
-  final ThemeMode mode;
 }

@@ -18,9 +18,9 @@ class NoteCard extends StatelessWidget {
 
   IconData _noteTypeToIcon(NoteData note) {
     switch (note.type) {
-      case NoteType.Todo:
+      case NoteType.todo:
         return Icons.rule;
-      case NoteType.Text:
+      case NoteType.text:
         return Icons.description_outlined;
     }
   }
@@ -36,12 +36,9 @@ class NoteCard extends StatelessWidget {
         margin: const EdgeInsets.only(top: 10.0, bottom: 2.0),
         color: Colors.red,
         alignment: Alignment.centerLeft,
-        child: Padding(
+        child: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Icon(
-            Icons.delete_outline,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
+          child: Icon(Icons.delete_outline),
         ),
       ),
       child: Card(

@@ -29,34 +29,38 @@ class _TodoTaskCreatorState extends State<TodoTaskCreator> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Material(
-        elevation: 6,
-        shadowColor: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.circular(24.0),
-        child: TextField(
-          decoration: const InputDecoration(
-            hintText: 'New task',
-            prefixIcon: Icon(Icons.add_circle_outline_rounded),
-            border: InputBorder.none,
-            filled: false,
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: 'New item',
+          enabledBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(width: 1, color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(10),
           ),
-          controller: _textController,
-          focusNode: _focusNode,
-          onEditingComplete: () {
-            if (_textController.text.isNotEmpty) {
-              widget.onCreated(TodoItemData(
-                isChecked: false,
-                text: _textController.text,
-              ));
-            }
-
-            _textController.clear();
-
-            if (widget.keepFocusAfterSubmit) {
-              _focusNode.requestFocus();
-            }
-          },
         ),
+        controller: _textController,
+        focusNode: _focusNode,
+        onSubmitted: (value) {
+          _textController.clear();
+
+          if (widget.keepFocusAfterSubmit) {
+            _focusNode.requestFocus();
+          }
+        },
+        onEditingComplete: () {
+          if (_textController.text.isNotEmpty) {
+            widget.onCreated(TodoItemData(
+              isChecked: false,
+              text: _textController.text,
+            ));
+          }
+
+          _textController.clear();
+
+          if (widget.keepFocusAfterSubmit) {
+            _focusNode.requestFocus();
+          }
+        },
       ),
     );
   }
@@ -66,7 +70,7 @@ class _TodoTaskCreatorState extends State<TodoTaskCreator> {
     super.initState();
     _focusNode.addListener(() {
       if (!_focusNode.hasPrimaryFocus && widget.clearTextAfterFocusLoss) {
-        WidgetsBinding.instance!
+        WidgetsBinding.instance
             .addPostFrameCallback((_) => _textController.clear());
       }
     });

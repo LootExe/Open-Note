@@ -5,19 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/note_bloc.dart';
 import '../../model/todo_data.dart';
+import 'note_title.dart';
 import 'todo_item.dart';
 import 'todo_task_creator.dart';
 
 class TodoNote extends StatefulWidget {
-  const TodoNote({
-    Key? key,
-    required this.data,
-  }) : super(key: key);
+  const TodoNote({Key? key, required this.data}) : super(key: key);
 
   final TodoData data;
 
   @override
-  _TodoNoteState createState() => _TodoNoteState();
+  State<StatefulWidget> createState() => _TodoNoteState();
 }
 
 class _TodoNoteState extends State<TodoNote>
@@ -100,7 +98,9 @@ class _TodoNoteState extends State<TodoNote>
     return GestureDetector(
       onTap: () => primaryFocus!.unfocus(),
       child: Column(
-        children: <Widget>[
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          NoteTitle(title: widget.data.title),
           Expanded(
             child: BlocListener<NoteBloc, NoteState>(
               listener: (context, state) {

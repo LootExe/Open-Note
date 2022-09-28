@@ -10,14 +10,14 @@ class DeleteDialog {
       builder: (context) => AlertDialog(
         title: const Text('Delete Note'),
         content: const Text('Are you sure you want to delete this note?'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () => Navigator.of(context).pop(true),
-          ),
+        actions: [
           TextButton(
             child: const Text('Cancel'),
             onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
       ),

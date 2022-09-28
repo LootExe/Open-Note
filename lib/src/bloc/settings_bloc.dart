@@ -8,31 +8,25 @@ part 'settings_event.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc({required SettingsRepository repository})
-      : this._repository = repository,
-        super(SettingsInitial(repository.settings));
+      : _repository = repository,
+        super(SettingsInitial(repository.settings)) {
+    on<SettingsLoaded>(_onLoaded);
+    on<SettingsChanged>(_onChanged);
+  }
 
   final SettingsRepository _repository;
 
   SettingsData get settings => _repository.settings;
 
-  @override
-  Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
-    if (event is SettingsLoaded) {
-      yield* _mapSettingsLoadedToState();
-    }
-
-    if (event is SettingsChanged) {
-      yield* _mapSettingsChangedToState();
-    }
+  Future<void> _onLoaded(
+      SettingsLoaded event, Emitter<SettingsState> emit) async {
+    emit(SettingsLoadSuccess(settings));
   }
 
-  Stream<SettingsState> _mapSettingsLoadedToState() async* {
-    yield SettingsLoadSuccess(settings);
-  }
-
-  Stream<SettingsState> _mapSettingsChangedToState() async* {
+  Future<void> _onChanged(
+      SettingsChanged event, Emitter<SettingsState> emit) async {
     await _repository.writeSettings();
 
-    yield SettingsChangeSuccess(settings);
+    emit(SettingsChangeSuccess(settings));
   }
 }

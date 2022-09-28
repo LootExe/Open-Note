@@ -8,10 +8,8 @@ class TextFieldSheet {
   }) async {
     final String? text = await showModalBottomSheet(
       context: context,
-      isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        // TODO: Closing keyboard should close the dialog
         return AnimatedPadding(
           padding: MediaQuery.of(context).viewInsets,
           duration: const Duration(milliseconds: 100),
@@ -37,10 +35,6 @@ class TextFieldSheet {
         );
       },
     );
-
-    if (text == null) {
-      return null;
-    }
 
     return text;
   }

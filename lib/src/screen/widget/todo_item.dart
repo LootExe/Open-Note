@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../model/todo_data.dart';
 import 'round_checkbox_list_tile.dart';
@@ -37,10 +36,8 @@ class _TodoItemState extends State<TodoItem> {
     ),
   ));
 
-  static final _slideTween = Tween<Offset>(
-    begin: Offset(1.0, 0.0),
-    end: Offset.zero,
-  ).chain(
+  static final _slideTween =
+      Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
     CurveTween(
       curve: const Interval(
         0.3,
@@ -51,54 +48,59 @@ class _TodoItemState extends State<TodoItem> {
   );
 
   Widget _buildSlidable() {
-    return Slidable(
+    return Dismissible(
       key: ValueKey(widget.data),
-      child: _buildCheckboxListTile(),
-      dismissal: SlidableDismissal(
-        child: SlidableDrawerDismissal(
-          key: UniqueKey(),
+      direction: DismissDirection.horizontal,
+      background: const ColoredBox(
+        color: Colors.red,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Icon(Icons.delete_outline),
+          ),
         ),
-        onDismissed: (_) {
+      ),
+      secondaryBackground: const ColoredBox(
+        color: Colors.indigo,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Icon(Icons.edit),
+          ),
+        ),
+      ),
+      onDismissed: (DismissDirection direction) async {
+        if (direction == DismissDirection.startToEnd) {
           if (widget.onDeleted != null) {
             widget.onDeleted!();
           }
-        },
-        dragDismissible: false,
-      ),
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.2,
-      actions: <Widget>[
-        Builder(
-          builder: (context) => IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete_outline,
-            onTap: () => Slidable.of(context)!.dismiss(),
-          ),
-        ),
-        IconSlideAction(
-          caption: 'Rename',
-          color: Colors.indigo,
-          icon: Icons.edit,
-          onTap: () async {
-            String? text = await TextFieldSheet.show(
-              context: context,
-              labelText: 'Task name',
-              initialText: widget.data.text,
-            );
+        }
+      },
+      confirmDismiss: (DismissDirection direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          return true;
+        } else {
+          String? text = await TextFieldSheet.show(
+            context: context,
+            labelText: 'Task name',
+            initialText: widget.data.text,
+          );
 
-            if (text != null && text != widget.data.text) {
-              setState(() {
-                widget.data.text = text;
+          if (text != null && text != widget.data.text) {
+            setState(() {
+              widget.data.text = text;
 
-                if (widget.onChanged != null) {
-                  widget.onChanged!(widget.data.isChecked);
-                }
-              });
-            }
-          },
-        ),
-      ],
+              if (widget.onChanged != null) {
+                widget.onChanged!(widget.data.isChecked);
+              }
+            });
+          }
+          return false;
+        }
+      },
+      child: _buildCheckboxListTile(),
     );
   }
 

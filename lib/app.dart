@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'src/bloc/note_list_bloc.dart';
 import 'src/bloc/settings_bloc.dart';
 import 'src/repository/notes_repository.dart';
 import 'src/repository/settings_repository.dart';
@@ -9,6 +10,8 @@ import 'src/screen/home_screen.dart';
 import 'src/theme_manager.dart';
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   Future<bool> _loadData(BuildContext context) async {
     await Future.wait([
       RepositoryProvider.of<SettingsRepository>(context).readSettings(),
@@ -29,25 +32,33 @@ class App extends StatelessWidget {
       future: _loadData(context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return BlocProvider(
-            create: (context) => SettingsBloc(
-              repository: RepositoryProvider.of<SettingsRepository>(context),
-            ),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => SettingsBloc(
+                    repository:
+                        RepositoryProvider.of<SettingsRepository>(context)),
+              ),
+              BlocProvider(
+                create: (context) => NoteListBloc(
+                    RepositoryProvider.of<NotesRepository>(context)),
+              ),
+            ],
             child: BlocBuilder<SettingsBloc, SettingsState>(
               builder: (context, state) => MaterialApp(
                 theme: ThemeManager.lightTheme,
                 darkTheme: ThemeManager.darkTheme,
                 themeMode: state.settings.themeMode,
-                home: HomeScreen(),
+                home: const HomeScreen(),
               ),
             ),
           );
         } else {
           return const Center(
             child: SizedBox(
-              child: CircularProgressIndicator(),
               width: 60,
               height: 60,
+              child: CircularProgressIndicator(),
             ),
           );
         }

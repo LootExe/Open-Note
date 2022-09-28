@@ -11,6 +11,6 @@ abstract class NoteData {
 }
 
 enum NoteType {
-  Todo,
-  Text,
+  todo,
+  text,
 }

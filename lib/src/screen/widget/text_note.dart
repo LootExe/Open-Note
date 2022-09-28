@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/note_bloc.dart';
 import '../../model/text_data.dart';
+import 'note_title.dart';
 
 class TextNote extends StatefulWidget {
   const TextNote({Key? key, required this.data}) : super(key: key);
@@ -32,19 +33,27 @@ class _TextNoteState extends State<TextNote> {
         }
       },
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          NoteTitle(title: widget.data.title),
           Expanded(
             child: ScrollConfiguration(
               behavior: TextEditorScrollBehavior(),
               child: Scrollbar(
                 child: TextField(
+                  style: const TextStyle(color: Colors.grey),
                   controller: _controller,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   minLines: null,
                   expands: true,
                   decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.only(left: 20.0, right: 20.0),
+                    hintText: 'Start writing your text ...',
+                    contentPadding: EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                      top: 10.0,
+                    ),
                     isCollapsed: true,
                     filled: false,
                   ),

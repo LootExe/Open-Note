@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageProvider {
@@ -8,56 +7,16 @@ class StorageProvider {
     return prefs.getKeys();
   }
 
-  static Future<Map<String, dynamic>> readJson(String key) async {
+  static Future<String> readEntry(String key) async {
     final prefs = await SharedPreferences.getInstance();
 
-    final data = prefs.getString(key);
-    var json = Map<String, dynamic>();
-
-    if (data == null) {
-      return json;
-    }
-
-    try {
-      json = jsonDecode(data) as Map<String, dynamic>;
-    } finally {
-      return json;
-    }
+    return prefs.getString(key) ?? '';
   }
 
-  static Future<List<Map<String, dynamic>>> readJsonList(String key) async {
+  static Future<bool> writeEntry(String key, String value) async {
     final prefs = await SharedPreferences.getInstance();
 
-    final data = prefs.getStringList(key);
-
-    if (data != null) {
-      return data.map<Map<String, dynamic>>((e) {
-        var json = Map<String, dynamic>();
-
-        try {
-          json = jsonDecode(e) as Map<String, dynamic>;
-        } finally {
-          return json;
-        }
-      }).toList();
-    }
-
-    return [];
-  }
-
-  static Future<bool> writeJson(String key, Map<dynamic, dynamic> value) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    return prefs.setString(key, jsonEncode(value));
-  }
-
-  static Future<bool> writeJsonList(
-      String key, List<Map<dynamic, dynamic>> values) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final list = values.map<String>((e) => jsonEncode(e)).toList();
-
-    return prefs.setStringList(key, list);
+    return prefs.setString(key, value);
   }
 
   static Future<bool> removeEntry(String key) async {

@@ -26,3 +26,30 @@ class NoteListUpdateSuccess extends NoteListState {
 class NoteListItemDeleteSuccess extends NoteListState {
   NoteListItemDeleteSuccess(List<NoteData> notes) : super(notes);
 }
+
+class NoteListExportSuccess extends NoteListState {
+  NoteListExportSuccess(List<NoteData> notes) : super(notes);
+}
+
+class NoteListExportFailure extends NoteListState {
+  NoteListExportFailure(List<NoteData> notes) : super(notes);
+}
+
+class NoteListImportSuccess extends NoteListState {
+  NoteListImportSuccess(List<NoteData> notes) : super(notes);
+}
+
+class NoteListImportFailure extends NoteListState {
+  NoteListImportFailure(List<NoteData> notes) : super(notes);
+}
+
+class NoteListImportFileStartFailure extends NoteListState {
+  NoteListImportFileStartFailure(List<NoteData> notes) : super(notes);
+}
+
+class NoteListImportFileLoadSuccess extends NoteListState {
+  final List<NoteListFile> files;
+
+  NoteListImportFileLoadSuccess(List<NoteData> notes, this.files)
+      : super(notes);
+}

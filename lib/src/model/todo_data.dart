@@ -12,7 +12,7 @@ class TodoData extends NoteData {
     required this.items,
   }) : super(
           title: title,
-          type: NoteType.Todo,
+          type: NoteType.todo,
           editTime: editTime,
         );
 
@@ -20,18 +20,19 @@ class TodoData extends NoteData {
 
   factory TodoData.fromJson(Map<String, dynamic> json) =>
       _$TodoDataFromJson(json);
+  @override
   Map<String, dynamic> toJson() => _$TodoDataToJson(this);
 
   @override
   TodoData clone() {
     final List<TodoItemData> itemList = [];
 
-    items.forEach((item) {
+    for (var item in items) {
       itemList.add(TodoItemData(
         isChecked: item.isChecked,
         text: item.text,
       ));
-    });
+    }
 
     return TodoData(title: title, editTime: editTime, items: itemList);
   }

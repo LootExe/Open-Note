@@ -48,6 +48,6 @@ K _$enumDecode<K, V>(
 }
 
 const _$NoteTypeEnumMap = {
-  NoteType.Todo: 'Todo',
-  NoteType.Text: 'Text',
+  NoteType.todo: 'Todo',
+  NoteType.text: 'Text',
 };
