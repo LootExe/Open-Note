@@ -48,7 +48,7 @@ class _TextNoteState extends State<TextNote> {
                   minLines: null,
                   expands: true,
                   decoration: const InputDecoration(
-                    hintText: 'Start writing your text ....',
+                    hintText: 'Start writing your text ...',
                     contentPadding: EdgeInsets.only(
                       left: 20.0,
                       right: 20.0,
