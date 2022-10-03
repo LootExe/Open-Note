@@ -53,6 +53,7 @@ flutter:
   uses-material-design: true
   assets:
     - asset/google_fonts/
+    - asset/icon/
 
 flutter_icons:
   android: true

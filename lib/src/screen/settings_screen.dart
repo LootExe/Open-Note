@@ -96,6 +96,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ..add(NoteListImportFilesStarted()),
                 ),
               ),
+              SettingsTile(
+                title: 'Licenses',
+                subtitle: 'Show licenses and app details',
+                onTap: () => showLicensePage(
+                  context: context,
+                  applicationName: 'Note App',
+                  applicationVersion: 'v2.0.1',
+                  applicationIcon: const Image(
+                    image: AssetImage('asset/icon/launcher_icon.png'),
+                    width: 64.0,
+                    height: 64.0,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
