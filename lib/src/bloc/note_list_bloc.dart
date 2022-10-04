@@ -101,6 +101,7 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
     final success = await _repository.readNotes(event.file);
 
     if (success) {
+      await _repository.writeNotes();
       emit(NoteListImportSuccess(notes));
     } else {
       emit(NoteListImportFailure(notes));
