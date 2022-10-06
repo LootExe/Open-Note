@@ -102,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: () => showLicensePage(
                   context: context,
                   applicationName: 'Note App',
-                  applicationVersion: 'v2.0.1',
+                  applicationVersion: 'v2.0.2',
                   applicationIcon: const Image(
                     image: AssetImage('asset/icon/launcher_icon.png'),
                     width: 64.0,
