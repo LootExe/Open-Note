@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:open_note/l10n/generated/l10n.dart';
 
-import 'package:note/src/screen/widget/delete_dialog.dart';
+import 'package:open_note/src/common/widget/widgets.dart';
 
 void main() {
-  testWidgets('Result is True after clicking Yes', (WidgetTester tester) async {
-    bool result = false;
+  testWidgets('Result should be true after clicking Delete', (tester) async {
+    var result = false;
 
     void showDeleteDialog(BuildContext context) async {
-      result = await DeleteDialog.show(context: context);
+      result = await DeleteDialog.show(context);
     }
 
-    await tester.pumpWidget(_buildAppWithDialog(showDeleteDialog));
+    await tester.pumpWidget(buildAppWithDialog(showDeleteDialog));
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
     expect(result, false);
-    await tester.tap(find.text('Yes'));
+    await tester.tap(find.text('Delete'));
     expect(result, true);
   });
 
-  testWidgets('Result is False after clicking Cancel',
-      (WidgetTester tester) async {
-    bool result = true;
+  testWidgets('Result should be false after clicking Cancel', (tester) async {
+    var result = true;
 
     void showDeleteDialog(BuildContext context) async {
-      result = await DeleteDialog.show(context: context);
+      result = await DeleteDialog.show(context);
     }
 
-    await tester.pumpWidget(_buildAppWithDialog(showDeleteDialog));
+    await tester.pumpWidget(buildAppWithDialog(showDeleteDialog));
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -40,20 +41,22 @@ void main() {
   });
 }
 
-MaterialApp _buildAppWithDialog(Function dialogMethod) {
+MaterialApp buildAppWithDialog(ValueSetter<BuildContext> dialogMethod) {
   return MaterialApp(
+    localizationsDelegates: const [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: S.delegate.supportedLocales,
     home: Material(
-      child: Builder(builder: (BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: Center(
-            child: ElevatedButton(
-              child: const Text('X'),
-              onPressed: () => dialogMethod(context),
-            ),
-          ),
-        );
-      }),
+      child: Builder(
+        builder: (context) => ElevatedButton(
+          onPressed: () => dialogMethod(context),
+          child: const Text('X'),
+        ),
+      ),
     ),
   );
 }
