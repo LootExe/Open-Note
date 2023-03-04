@@ -1,4 +1,4 @@
-# Note App
+# Open Note
 
 A Flutter based Note and Todo app.
 
