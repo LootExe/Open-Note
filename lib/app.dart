@@ -1,68 +1,94 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:note_repository/note_repository.dart';
+import 'package:settings_repository/settings_repository.dart';
 
-import 'src/bloc/note_list_bloc.dart';
-import 'src/bloc/settings_bloc.dart';
-import 'src/repository/notes_repository.dart';
-import 'src/repository/settings_repository.dart';
-import 'src/screen/home_screen.dart';
-import 'src/theme_manager.dart';
+import 'l10n/generated/l10n.dart';
+import 'src/common/utils.dart';
+import 'src/config/theme_config.dart';
+import 'src/note_overview/bloc/note_list_bloc.dart';
+import 'src/settings/bloc/settings_bloc.dart';
+import 'src/note_overview/screen/home_screen.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({
+    super.key,
+    required this.settingsRepository,
+    required this.notesRepository,
+  });
 
-  Future<bool> _loadData(BuildContext context) async {
-    await Future.wait([
-      RepositoryProvider.of<SettingsRepository>(context).readSettings(),
-      RepositoryProvider.of<NotesRepository>(context).readNotes(),
-    ]);
+  final SettingsRepository settingsRepository;
+  final NoteRepository notesRepository;
 
-    return true;
+  ThemeData _generateTheme(
+      ColorScheme? dynamic, ColorScheme appDefault, bool useMonet) {
+    return dynamic != null && useMonet
+        ? ThemeConfig.fromScheme(dynamic)
+        : ThemeConfig.fromScheme(appDefault);
+  }
+
+  bool _buildWhen(SettingsState previous, SettingsState current) {
+    final prevSettings = previous.settings;
+    final currSettings = current.settings;
+
+    return prevSettings.themeMode != currSettings.themeMode ||
+        prevSettings.useMaterialYou != currSettings.useMaterialYou ||
+        prevSettings.language != currSettings.language;
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: notesRepository),
+        RepositoryProvider.value(value: settingsRepository),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => SettingsBloc(repository: settingsRepository),
+          ),
+          BlocProvider(
+            create: (_) => NoteListBloc(repository: notesRepository),
+          ),
+        ],
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          buildWhen: _buildWhen,
+          builder: (context, state) => DynamicColorBuilder(
+            // Can't move it to function because it would return a Widget.
+            // ignore: prefer-extracting-callbacks
+            builder: (lightDynamic, darkDynamic) {
+              final useMonet = state.settings.useMaterialYou;
+              final light = _generateTheme(
+                  lightDynamic, ThemeConfig.defaultLight, useMonet);
+              final dark = _generateTheme(
+                  darkDynamic, ThemeConfig.defaultDark, useMonet);
+              final language = state.settings.language;
+              final locale = Utils.getLocale(language);
 
-    return FutureBuilder(
-      future: _loadData(context),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => SettingsBloc(
-                    repository:
-                        RepositoryProvider.of<SettingsRepository>(context)),
-              ),
-              BlocProvider(
-                create: (context) => NoteListBloc(
-                    RepositoryProvider.of<NotesRepository>(context)),
-              ),
-            ],
-            child: BlocBuilder<SettingsBloc, SettingsState>(
-              builder: (context, state) => MaterialApp(
-                theme: ThemeManager.lightTheme,
-                darkTheme: ThemeManager.darkTheme,
+              return MaterialApp(
+                // Theming.
+                theme: light,
+                darkTheme: dark,
                 themeMode: state.settings.themeMode,
+                // Localization.
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                locale: locale,
+                // Entry point.
                 home: const HomeScreen(),
-              ),
-            ),
-          );
-        } else {
-          return const Center(
-            child: SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
