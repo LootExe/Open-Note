@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.note">
+    package="com.shadycowgames.opennote">
  
     <application
-        android:label="Note"
+        android:label="Open Note"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
