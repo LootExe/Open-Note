@@ -10,4 +10,6 @@ class AppConfig {
   static const fontLicense = 'asset/font/LICENSE.txt';
 
   static const codeRepository = 'https://github.com/LootExe/Note';
+
+  AppConfig._();
 }

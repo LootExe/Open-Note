@@ -71,6 +71,8 @@ class ThemeConfig {
     surfaceTint: Color(0xFF79DA9F),
   );
 
+  ThemeConfig._();
+
   static ThemeData fromScheme(ColorScheme scheme) {
     final theme = ThemeData(
       useMaterial3: true,

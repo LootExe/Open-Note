@@ -18,4 +18,6 @@ class AppDesign {
 
   /// Zero-Width space unicode character.
   static const kZeroWidthSpace = '\u200b';
+
+  AppDesign._();
 }

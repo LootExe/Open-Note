@@ -1,6 +1,8 @@
 import 'package:note_repository/note_repository.dart';
 
 class NoteListSorter {
+  NoteListSorter._();
+
   static List<Note> sortEditDate(List<Note> notes) {
     final sortedNotes = List.of(notes, growable: false);
 
