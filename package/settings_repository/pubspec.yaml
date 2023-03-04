@@ -1,0 +1,14 @@
+name: settings_repository
+description: A repository that handles app settings related requests.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  settings_provider:
+    path: ../settings_provider
+
+dev_dependencies:
+  test: ^1.21.4

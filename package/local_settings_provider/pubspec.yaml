@@ -1,0 +1,19 @@
+name: local_settings_provider
+description: An implementation of the settings provider using shared storage.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  meta: ^1.8.0
+  shared_preferences: ^2.0.15
+  settings_provider:
+    path: ../settings_provider
+
+dev_dependencies:
+  test: ^1.21.4
