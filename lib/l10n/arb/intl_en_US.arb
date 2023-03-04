@@ -1,0 +1,65 @@
+{
+  "appTitle": "Note",
+  "emptyListInfo": "To add a note, click on the + button in the bottom right corner.",
+  "settingsAppbar": "Settings",
+  "settingsAppearanceHeader": "Appearance",
+  "settingsNotesHeader": "Notes",
+  "settingsAboutHeader": "About",
+  "settingsThemeSystem": "System default",
+  "settingsThemeLight": "Always light",
+  "settingsThemeDark": "Always dark",
+  "settingsThemeButton": "Theme",
+  "themeDialogTitle": "Theme Mode",
+  "settingMonetAndroidColor": "Android 12+ color system",
+  "settingMonetAppColor": "Default app color scheme",
+  "settingLocaleLanguageButton": "Language",
+  "settingLocaleSystemDefault": "System default",
+  "settingSortTitle": "Sorting Mode",
+  "settingSortEditDate": "Edit date (default)",
+  "settingSortAscending": "Alphabetical ↑",
+  "settingSortDescending": "Alphabetical ↓",
+  "settingSortManual": "Manual",
+  "settingExportTitle": "Export Notes",
+  "settingExportSubtitle": "Export into a file",
+  "settingExportCancelled": "Export cancelled",
+  "settingExportSuccess": "Notes exported",
+  "settingImportTitle": "Import Notes",
+  "settingImportSubtitle": "Import from a file",
+  "settingImportCancelled": "Import cancelled",
+  "settingImportSuccess": "Notes imported",
+  "settingLicenseTitle": "Licenses",
+  "settingLicenseSubtitle": "Show third-party licenses",
+  "dateSeparatedListTodaySeparator": "Today",
+  "dateSeparatedListYesterdaySeparator": "Yesterday",
+  "dateSeparatedList30DaysSeparator": "Past 30 Days",
+  "utilsParseDateTimeShortTime": "{time}",
+  "@utilsParseDateTimeShortTime": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "utilsParseDateTimeLongDate": "{date}",
+  "@utilsParseDateTimeLongDate": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMMd"
+      }
+    }
+  },
+  "deleteDialogTitle": "Delete Note",
+  "deleteDialogContent": "Do you want to delete this note?",
+  "deleteDialogActionCancel": "Cancel",
+  "deleteDialogActionDelete": "Delete",
+  "noteAppBarDateToday": "Today",
+  "noteAppBarDateYesterday": "Yesterday",
+  "noteMenuClearLabel": "Clear",
+  "noteMenuShareLabel": "Share",
+  "noteMenuDeleteLabel": "Delete",
+  "noteMenuShareMessage": "Nothing to share",
+  "noteTitleHint": "Title",
+  "noteContentTextHint": "Start writing your text ..."
+}
