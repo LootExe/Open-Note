@@ -1,61 +1,78 @@
-name: note
-description: Text Note and Todo App.
+name: open_note
+description: Text and Todo Note App.
+publish_to: 'none'
 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.0+1
+version: 3.0.0 
 
 environment:
-  sdk: ">=2.18.2 <3.0.0"
+  sdk: ">=2.19.1 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
-  animations: ^2.0.5
-  google_fonts: ^3.0.1
-  shared_preferences: ^2.0.15
-  intl: ^0.17.0
-  bloc: ^8.1.0
-  flutter_bloc: ^8.1.1
-  json_annotation: ^4.7.0
-  flutter_speed_dial: ^6.0.0
-  flutter_keyboard_visibility: ^5.3.0
-  fluttertoast: ^8.0.9
-  flex_color_scheme: ^6.0.1
-  share_plus: ^4.4.0
-  shared_storage: ^0.5.0
+  bloc: ^8.1.1
+  dynamic_color: ^1.6.2
+  equatable: ^2.0.5
+  file_picker: ^5.2.5
+  flutter_bloc: ^8.1.2
+  flutter_speed_dial: ^6.2.0
+  intl: any
+  replay_bloc: ^0.2.3
+  share_plus: ^6.3.0
+  url_launcher: ^6.1.9
+  
+# Settings Provider
+  local_settings_provider:
+    path: package/local_settings_provider
+  settings_repository:
+    path: package/settings_repository
+
+# Note Provider
+  local_note_provider:
+    path: package/local_note_provider
+  note_repository:
+    path: package/note_repository
+  note_backup_provider:
+    path: package/note_backup_provider
+
+# Settings View
+  settings_view:
+    path: package/settings_view
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  bloc_test: ^9.1.0
+  build_runner: ^2.3.3
+  dart_code_metrics: ^5.6.0
+  flutter_launcher_icons: ^0.11.0
   flutter_lints: ^2.0.1
-  test: ^1.21.4
-  build_runner: ^2.2.1
-  json_serializable: ^6.4.0
-  flutter_launcher_icons: ^0.10.0
+  test: any
 
-# The following section is specific to Flutter.
 flutter:
   uses-material-design: true
+#  generate: true
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: asset/font/Roboto-Regular.ttf
   assets:
-    - asset/google_fonts/
+    - asset/font/
     - asset/icon/
 
 flutter_icons:
   android: true
-  ios: true
+  adaptive_icon_background: '#35A0CB'
+  adaptive_icon_foreground: 'asset/icon/adaptive_icon_foreground.png'
   image_path: 'asset/icon/launcher_icon.png'
+
+flutter_intl:
+  enabled: true 
+  class_name: S
+  main_locale: en_US
+  arb_dir: lib/l10n/arb 
+  output_dir: lib/l10n/generated 
