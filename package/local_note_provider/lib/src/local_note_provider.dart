@@ -1,24 +1,29 @@
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:note_provider/note_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// {@template local_note_provider}
+/// An implementation of the NoteProvider that uses local storage.
+/// {@endtemplate}
 class LocalNoteProvider extends NoteProvider {
-  @visibleForTesting
-  static const kNotesKey = 'notesKey';
-
-  final SharedPreferences _plugin;
-  final List<Note> _notes = [];
-
-  LocalNoteProvider({
-    required SharedPreferences plugin,
-  }) : _plugin = plugin {
+  /// {@macro local_note_provider}
+  LocalNoteProvider({required SharedPreferences plugin})
+      : _plugin = plugin,
+        _notes = <Note>[] {
     _initialize();
   }
 
+  /// Shared preferences key for accessing notes.
+  @visibleForTesting
+  static const kNotesKey = 'sharedPreferencesNotes';
+
+  final SharedPreferences _plugin;
+  final List<Note> _notes;
+
   @override
-  List<Note> getNotes() => _notes;
+  Future<List<Note>> readNotes() => Future.value(_notes);
 
   @override
   Future<void> saveNote(Note note) {
@@ -53,14 +58,20 @@ class LocalNoteProvider extends NoteProvider {
       return;
     }
 
-    final jsonObject = json.decode(jsonString);
+    try {
+      _notes.clear();
+      final jsonObject = json.decode(jsonString) as List<dynamic>;
+      final jsonList = List<JsonMap>.from(jsonObject);
 
-    for (JsonMap entry in jsonObject) {
-      if (entry.containsKey('content')) {
-        _notes.add(TextNote.fromJson(entry));
-      } else if (entry.containsKey('items')) {
-        _notes.add(TodoNote.fromJson(entry));
+      for (final entry in jsonList) {
+        if (entry.containsKey('content')) {
+          _notes.add(TextNote.fromJson(entry));
+        } else if (entry.containsKey('items')) {
+          _notes.add(TodoNote.fromJson(entry));
+        }
       }
+    } catch (e) {
+      return;
     }
   }
 }

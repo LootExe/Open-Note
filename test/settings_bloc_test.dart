@@ -1,10 +1,9 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:local_settings_provider/local_settings_provider.dart';
+import 'package:open_note/settings/bloc/settings_bloc.dart';
 import 'package:settings_repository/settings_repository.dart';
 import 'package:test/test.dart';
-import 'package:bloc_test/bloc_test.dart';
-
-import 'package:open_note/src/settings/bloc/settings_bloc.dart';
 
 void main() {
   group('SettingsBloc', () {
@@ -12,7 +11,7 @@ void main() {
 
     setUp(() async {
       final values = <String, Object>{
-        'flutter.${LocalSettingsProvider.kSettingsKey}': '{"themeMode":"dark"}'
+        'flutter.${LocalSettingsProvider.kSettingsKey}': '{"themeMode":"dark"}',
       };
 
       SharedPreferences.setMockInitialValues(values);
@@ -25,10 +24,11 @@ void main() {
 
     test('initial state is SettingsState with data from repository', () {
       expect(
-          settingsBloc.state,
-          const SettingsState(
-            settings: Settings(themeMode: ThemeMode.dark),
-          ));
+        settingsBloc.state,
+        const SettingsState(
+          settings: Settings(themeMode: ThemeMode.dark),
+        ),
+      );
     });
 
     blocTest(
@@ -36,7 +36,7 @@ void main() {
       build: () => settingsBloc,
       act: (bloc) {
         const newSettings = Settings(themeMode: ThemeMode.light);
-        bloc.add(const SettingsUpdated(newSettings));
+        bloc.add(const SettingsChanged(newSettings));
       },
       expect: () => [
         const SettingsState(

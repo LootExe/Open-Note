@@ -1,10 +1,14 @@
-import 'model/note.dart';
+import 'package:note_provider/src/model/note.dart';
 
+/// {@template note_provider}
+/// The interface and models for an API providing access to notes.
+/// {@endtemplate}
 abstract class NoteProvider {
+  /// Create a provider instance.
   const NoteProvider();
 
   /// Provides a [List] of all notes.
-  List<Note> getNotes();
+  Future<List<Note>> readNotes();
 
   /// Saves a [Note].
   ///

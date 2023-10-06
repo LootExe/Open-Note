@@ -1,78 +1,9 @@
-include: package:flutter_lints/flutter.yaml
+include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   exclude: 
     - lib/l10n/**
-  plugins:
-    - dart_code_metrics
 
-dart_code_metrics:
-  metrics:
-    cyclomatic-complexity: 20
-    number-of-parameters: 4
-    maximum-nesting-level: 5
-  metrics-exclude:
-    - test/**
-  rules-exclude:
-    - "**/*.g.dart"
-    - "**/*_test.dart"
-    - lib/l10n/**
-
+linter:
   rules:
-# Dart specific
-    - avoid-banned-imports
-    - avoid-cascade-after-if-null
-    - avoid-collection-methods-with-unrelated-types
-    - avoid-dynamic
-    - avoid-global-state
-    - avoid-late-keyword
-    - avoid-missing-enum-constant-in-map
-    - avoid-nested-conditional-expressions
-    - avoid-non-null-assertion
-    - avoid-passing-async-when-sync-expected
-    - avoid-redundant-async
-    - avoid-throw-in-catch-block
-    - avoid-top-level-members-in-tests
-    - avoid-unnecessary-type-assertions
-    - avoid-unnecessary-type-casts
-    - avoid-unrelated-type-assertions
-    - avoid-unused-parameters
-    - ban-name
-    - binary-expression-operand-order
-    - double-literal-format
-    - format-comment
-    - member-ordering
-    - newline-before-return
-    - no-boolean-literal-compare
-    - no-empty-block
-    - no-equal-then-else
-    - no-object-declaration
-    - prefer-async-await
-    - prefer-commenting-analyzer-ignores
-    - prefer-conditional-expressions
-    - prefer-correct-test-file-name
-    - prefer-correct-type-name
-    - prefer-enums-by-name
-    - prefer-first
-    - prefer-immediate-return
-    - prefer-iterable-of
-    - prefer-last
-    - prefer-match-file-name
-    - prefer-moving-to-variable
-    - prefer-static-class
-    - tag-name
-# Flutter specific
-    - always-remove-listener
-    - avoid-border-all
-    - avoid-returning-widgets
-    - avoid-shrink-wrap-in-lists
-    - avoid-unnecessary-setstate
-    - avoid-expanded-as-spacer
-    - avoid-wrapping-in-padding
-    - check-for-equals-in-render-object-setters
-    - consistent-update-render-object
-    - prefer-const-border-radius
-    - prefer-correct-edge-insets-constructor
-    - prefer-extracting-callbacks
-    - prefer-single-widget-per-file
-    - use-setstate-synchronously
+    public_member_api_docs: false

@@ -1,3 +1,4 @@
+/// A repository that handles settings related requests.
 library settings_repository;
 
 export 'package:settings_provider/settings_provider.dart' show Settings;

@@ -1,13 +1,13 @@
+import 'package:open_note/common/date_time_extension.dart';
 import 'package:test/test.dart';
-import 'package:open_note/src/common/date_time_extension.dart';
 
 void main() {
   test('date should return date with zero time', () {
     final now = DateTime(2023, 02, 22, 15, 39, 11);
 
-    final DateTime result = now.date;
+    final result = now.date;
 
-    expect(result, DateTime(2023, 02, 22, 0, 0, 0));
+    expect(result, DateTime(2023, 02, 22));
   });
 
   test('isToday should return true if specified day is today', () {
@@ -67,7 +67,7 @@ void main() {
   });
 
   test('daySuffix should be "st" on the 1, 21, 31 day of a month', () {
-    final date1 = DateTime(2023, 01, 01);
+    final date1 = DateTime(2023);
     final date2 = DateTime(2023, 01, 21);
     final date3 = DateTime(2023, 01, 31);
 
@@ -103,16 +103,18 @@ void main() {
   });
 
   test('daySuffix should be "th" for all other days of a month', () {
-    final days = List.generate(31, (index) => index);
-    days.removeWhere((day) =>
-        day == 0 ||
-        day == 1 ||
-        day == 2 ||
-        day == 3 ||
-        day == 21 ||
-        day == 22 ||
-        day == 23 ||
-        day == 31);
+    final days = List.generate(31, (index) => index)
+      ..removeWhere(
+        (day) =>
+            day == 0 ||
+            day == 1 ||
+            day == 2 ||
+            day == 3 ||
+            day == 21 ||
+            day == 22 ||
+            day == 23 ||
+            day == 31,
+      );
 
     final result = days.any((day) => DateTime(2023, 01, day).daySuffix != 'th');
 

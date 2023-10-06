@@ -3,21 +3,15 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-import 'json_map.dart';
-
 part 'note.g.dart';
 
+/// The type definition for a JSON-serializable [Map].
+typedef JsonMap = Map<String, dynamic>;
+
+/// Base class for text or to-do note types.
 @immutable
 abstract class Note extends Equatable {
-  /// The unique identifier of the note.
-  final String id;
-
-  /// Note title.
-  final String title;
-
-  /// The time the note was edited.
-  final DateTime editTime;
-
+  /// Creates a new Note instance.
   Note({
     String? id,
     this.title = '',
@@ -29,6 +23,15 @@ abstract class Note extends Equatable {
         id = id ?? const Uuid().v4(),
         editTime = editTime ?? DateTime.now();
 
+  /// The unique identifier of the note.
+  final String id;
+
+  /// Note title.
+  final String title;
+
+  /// The time the note was edited.
+  final DateTime editTime;
+
   /// Converts this [Note] into a [JsonMap].
   JsonMap toJson();
 
@@ -36,15 +39,11 @@ abstract class Note extends Equatable {
   Note copyWith({String? id, String? title, DateTime? editTime});
 }
 
+/// A Note that contains text content.
 @immutable
 @JsonSerializable()
-class TextNote extends Note {
-  /// Text note content.
-  final String content;
-
-  @override
-  List<Object?> get props => [id, title, editTime, content];
-
+final class TextNote extends Note {
+  /// Creates a new Text Note instance.
   TextNote({
     super.id,
     super.title,
@@ -54,6 +53,9 @@ class TextNote extends Note {
 
   /// Deserializes the given [JsonMap] into [TextNote].
   factory TextNote.fromJson(JsonMap json) => _$TextNoteFromJson(json);
+
+  /// Text note content.
+  final String content;
 
   @override
   JsonMap toJson() => _$TextNoteToJson(this);
@@ -74,18 +76,17 @@ class TextNote extends Note {
   }
 
   @override
+  List<Object?> get props => [id, title, editTime, content];
+
+  @override
   String toString() => content;
 }
 
+/// A Note that contains to-do items.
 @immutable
 @JsonSerializable()
-class TodoNote extends Note {
-  /// Todo items.
-  final List<TodoItem> items;
-
-  @override
-  List<Object?> get props => [id, title, editTime, items];
-
+final class TodoNote extends Note {
+  /// Creates a new To-Do Note instance.
   TodoNote({
     super.id,
     super.title,
@@ -95,6 +96,9 @@ class TodoNote extends Note {
 
   /// Deserializes the given [JsonMap] into [TodoNote].
   factory TodoNote.fromJson(JsonMap json) => _$TodoNoteFromJson(json);
+
+  /// To-do items.
+  final List<TodoItem> items;
 
   @override
   JsonMap toJson() => _$TodoNoteToJson(this);
@@ -115,24 +119,17 @@ class TodoNote extends Note {
   }
 
   @override
+  List<Object?> get props => [id, title, editTime, items];
+
+  @override
   String toString() => items.join(', ');
 }
 
+/// A To-Do item.
 @immutable
 @JsonSerializable()
-class TodoItem extends Equatable {
-  /// The unique identifier of the item.
-  final String id;
-
-  /// Item text.
-  final String text;
-
-  /// Item completion status.
-  final bool isChecked;
-
-  @override
-  List<Object?> get props => [id, text, isChecked];
-
+final class TodoItem extends Equatable {
+  /// Creates a new To-Do Item instance.
   TodoItem({
     String? id,
     this.text = '',
@@ -145,6 +142,15 @@ class TodoItem extends Equatable {
 
   /// Deserializes the given [JsonMap] into [TodoItem].
   factory TodoItem.fromJson(JsonMap json) => _$TodoItemFromJson(json);
+
+  /// The unique identifier of the item.
+  final String id;
+
+  /// Item text.
+  final String text;
+
+  /// Item completion status.
+  final bool isChecked;
 
   /// Converts this [TodoItem] into a [JsonMap].
   JsonMap toJson() => _$TodoItemToJson(this);
@@ -161,6 +167,9 @@ class TodoItem extends Equatable {
       isChecked: isChecked ?? this.isChecked,
     );
   }
+
+  @override
+  List<Object?> get props => [id, text, isChecked];
 
   @override
   String toString() => text;

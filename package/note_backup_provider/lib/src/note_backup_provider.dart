@@ -1,44 +1,52 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:intl/intl.dart';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 import 'package:note_provider/note_provider.dart';
-import 'package:path/path.dart' as path;
 
+/// {@template note_backup_provider}
+/// A provider that handles note backups to and from file.
+/// {@endtemplate}
 class NoteBackupProvider {
-  Future<void> saveNotes(List<Note> notes, String directory) async {
-    assert(directory.isNotEmpty);
+  /// {@macro note_backup_provider}
+  const NoteBackupProvider({FileSystem fileSystem = const LocalFileSystem()})
+      : _fileSystem = fileSystem;
 
-    final dateString = DateFormat('y-MM-dd_HH-mm-ss').format(DateTime.now());
-    final filename = 'noteezy_backup_$dateString.txt';
-    final fullPath = path.join(directory, filename);
-    final jsonString = json.encode(notes);
+  final FileSystem _fileSystem;
 
-    await File(fullPath).writeAsString(
-      jsonString,
-      mode: FileMode.writeOnly,
-    );
-  }
-
+  /// Reads all notes from the file.
+  /// Returns a `Future<List<Note>>` that completes with the notes
+  /// once the file content has been read.
   Future<List<Note>> readNotes(String file) async {
-    assert(file.isNotEmpty);
-    final jsonString = await File(file).readAsString();
+    final jsonString = await _fileSystem.file(file).readAsString();
+    final notes = <Note>[];
 
     try {
-      final jsonObject = json.decode(jsonString);
-      final List<Note> notes = [];
+      final jsonObject = json.decode(jsonString) as List<dynamic>;
+      final jsonList = List<JsonMap>.from(jsonObject);
 
-      for (JsonMap entry in jsonObject) {
+      for (final entry in jsonList) {
         if (entry.containsKey('content')) {
           notes.add(TextNote.fromJson(entry));
         } else if (entry.containsKey('items')) {
           notes.add(TodoNote.fromJson(entry));
         }
       }
-
-      return notes;
-    } on FormatException {
-      return [];
+    } catch (e) {
+      throw const FormatException('Wron Json format.');
     }
+
+    return notes;
+  }
+
+  /// Writes all notes to a file.
+  /// Returns a `Future` that completes once the content has been written.
+  Future<void> saveNotes(String file, List<Note> notes) async {
+    final jsonString = json.encode(notes);
+
+    await _fileSystem.file(file).writeAsString(
+          jsonString,
+          mode: FileMode.writeOnly,
+        );
   }
 }

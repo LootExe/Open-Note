@@ -6,26 +6,25 @@ part of 'settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Settings _$$_SettingsFromJson(Map<String, dynamic> json) => _$_Settings(
+Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings(
       themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
           ThemeMode.system,
       useMaterialYou: json['useMaterialYou'] as bool? ?? false,
       noteSortMode:
           $enumDecodeNullable(_$NoteSortModeEnumMap, json['noteSortMode']) ??
               NoteSortMode.editDate,
-      noteSortOrder: (json['noteSortOrder'] as List<dynamic>?)
+      noteSortIds: (json['noteSortIds'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
-          const <String>[],
-      language: json['language'] as String? ?? null,
+          const [],
+      language: json['language'] as String?,
     );
 
-Map<String, dynamic> _$$_SettingsToJson(_$_Settings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'useMaterialYou': instance.useMaterialYou,
       'noteSortMode': _$NoteSortModeEnumMap[instance.noteSortMode]!,
-      'noteSortOrder': instance.noteSortOrder,
+      'noteSortIds': instance.noteSortIds,
       'language': instance.language,
     };
 

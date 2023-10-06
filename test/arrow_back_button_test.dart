@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:open_note/src/common/widget/widgets.dart';
+import 'package:open_note/common/widget/widget.dart';
 
 void main() {
   testWidgets('onPressed is called after tapping the button', (tester) async {

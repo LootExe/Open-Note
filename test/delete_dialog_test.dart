@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:open_note/common/widget/widget.dart';
 import 'package:open_note/l10n/generated/l10n.dart';
-
-import 'package:open_note/src/common/widget/widgets.dart';
 
 void main() {
   testWidgets('Result should be true after clicking Delete', (tester) async {
     var result = false;
 
-    void showDeleteDialog(BuildContext context) async {
+    Future<void> showDeleteDialog(BuildContext context) async {
       result = await DeleteDialog.show(context);
     }
 
@@ -26,7 +25,7 @@ void main() {
   testWidgets('Result should be false after clicking Cancel', (tester) async {
     var result = true;
 
-    void showDeleteDialog(BuildContext context) async {
+    Future<void> showDeleteDialog(BuildContext context) async {
       result = await DeleteDialog.show(context);
     }
 

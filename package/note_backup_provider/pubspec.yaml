@@ -1,16 +1,18 @@
 name: note_backup_provider
-description: A note backup implementation providing file I/O for notes.
+description: A provider that handles note backups to and from file.
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.1 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-
-  intl: any
-  path: ^1.8.2
+  file: ^6.0.0
+  
   note_provider:
     path: ../note_provider
+
+dev_dependencies:
+  mocktail: ^1.0.0
+  test: ^1.19.2
+  very_good_analysis: ^5.1.0

@@ -1,3 +1,4 @@
+/// A repository that handles note related requests.
 library note_repository;
 
 export 'package:note_provider/note_provider.dart' show Note;
