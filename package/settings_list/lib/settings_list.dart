@@ -3,4 +3,3 @@ library settings_list;
 
 export 'src/settings_category.dart';
 export 'src/settings_list.dart';
-export 'src/settings_tile.dart';
