@@ -57,8 +57,10 @@ Future<void> bootstrap({
     backupProvider: backupProvider,
   );
 
-  runApp(App(
-    settingsRepository: settingsRepository,
-    noteRepository: noteRepository,
-  ));
+  runApp(
+    App(
+      settingsRepository: settingsRepository,
+      noteRepository: noteRepository,
+    ),
+  );
 }
