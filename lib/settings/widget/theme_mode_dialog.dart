@@ -30,11 +30,11 @@ class ThemeModeDialog {
     required Settings settings,
   }) {
     void onChanged(ThemeMode? value) {
-      final updatedSettings = settings.copyWith(
+      final changedSettings = settings.copyWith(
         themeMode: value ?? ThemeMode.system,
       );
 
-      context.read<SettingsBloc>().add(SettingsChanged(updatedSettings));
+      context.read<SettingsBloc>().add(SettingsChanged(changedSettings));
     }
 
     return ThemeMode.values
