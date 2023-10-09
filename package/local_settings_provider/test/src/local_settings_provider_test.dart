@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:local_settings_provider/local_settings_provider.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:settings_provider/settings_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
