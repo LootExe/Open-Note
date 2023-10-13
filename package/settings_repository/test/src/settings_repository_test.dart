@@ -1,18 +1,20 @@
 // ignore_for_file: prefer_const_constructors, avoid_redundant_argument_values
 
-import 'package:flutter/material.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:settings_provider/settings_provider.dart';
-import 'package:settings_repository/settings_repository.dart';
-import 'package:test/test.dart';
+import 'dart:convert';
 
-class MockSettingsProvider extends Mock implements SettingsProvider {}
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:settings_repository/settings_repository.dart';
+import 'package:storage_provider/storage_provider.dart';
+
+class MockStorageProvider extends Mock implements StorageProvider {}
 
 class FakeSettings extends Fake implements Settings {}
 
 void main() {
   group('SettingsRepository', () {
-    late SettingsProvider provider;
+    late StorageProvider provider;
 
     final settings = Settings(
       themeMode: ThemeMode.light,
@@ -27,11 +29,11 @@ void main() {
     });
 
     setUp(() {
-      provider = MockSettingsProvider();
-      when(() => provider.readSettings()).thenAnswer(
-        (_) => Future.value(settings),
-      );
-      when(() => provider.saveSettings(any())).thenAnswer((_) async {});
+      provider = MockStorageProvider();
+      when(() => provider.read(any()))
+          .thenAnswer((_) => Future.value(json.encode(settings)));
+      when(() => provider.write(any(), any())).thenAnswer((_) async {});
+      when(() => provider.delete(any())).thenAnswer((_) async {});
     });
 
     SettingsRepository createSubject() =>
@@ -47,17 +49,38 @@ void main() {
     });
 
     group('readSettings', () {
-      test('returns correct settings data', () {
+      test('returns correct settings if storage data is available', () {
         expect(
           createSubject().readSettings(),
-          completion(equals(settings)),
+          completion(settings),
         );
 
-        verify(() => provider.readSettings()).called(1);
+        verify(() => provider.read(any())).called(1);
+      });
+
+      test('returns default settings if no storage data is available', () {
+        when(() => provider.read(any())).thenAnswer((_) => Future.value());
+        expect(
+          createSubject().readSettings(),
+          completion(const Settings()),
+        );
+
+        verify(() => provider.read(any())).called(1);
+      });
+
+      test('returns default settings if storage data is corrupt', () {
+        when(() => provider.read(any()))
+            .thenAnswer((_) => Future.value('oops'));
+        expect(
+          createSubject().readSettings(),
+          completion(const Settings()),
+        );
+
+        verify(() => provider.read(any())).called(1);
       });
     });
 
-    group('saveSettings', () {
+    group('writeSettings', () {
       test('makes correct provider request', () {
         final newSettings = Settings(
           themeMode: ThemeMode.dark,
@@ -67,11 +90,23 @@ void main() {
           language: 'de',
         );
 
-        final subject = createSubject();
+        expect(createSubject().writeSettings(newSettings), completes);
 
-        expect(subject.saveSettings(newSettings), completes);
+        verify(() => provider.write(any(), json.encode(newSettings))).called(1);
+      });
+    });
 
-        verify(() => provider.saveSettings(newSettings)).called(1);
+    group('clearSettings', () {
+      test('makes correct provider request', () {
+        expect(createSubject().clearSettings(), completes);
+        verify(() => provider.delete(any())).called(1);
+      });
+    });
+
+    group('clearSettings', () {
+      test('settings are set to default after clear', () {
+        final subject = createSubject()..clearSettings();
+        expect(subject.settings, const Settings());
       });
     });
   });

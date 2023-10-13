@@ -1,7 +1,6 @@
-/// A repository that handles settings related requests.
+/// A repository that handles app settings
 library settings_repository;
 
-export 'package:settings_provider/settings_provider.dart' show Settings;
-export 'package:settings_provider/settings_provider.dart' show NoteSortMode;
-
+export 'src/model/settings.dart' show Settings;
+export 'src/model/settings.dart' show NoteSortMode;
 export 'src/settings_repository.dart';

@@ -4,13 +4,13 @@
 [![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
 [![License: MIT][license_badge]][license_link]
 
-A repository that handles settings related requests.
+A repository that handles app settings
 
 ## Installation 💻
 
-**❗ In order to start using Settings Repository you must have the [Dart SDK][dart_install_link] installed on your machine.**
+**❗ In order to start using Settings Repository you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
 
-Install via `dart pub add`:
+Install via `flutter pub add`:
 
 ```sh
 dart pub add settings_repository
@@ -28,12 +28,16 @@ Out of the box, on each pull request and push, the CI `formats`, `lints`, and `t
 
 ## Running Tests 🧪
 
+For first time users, install the [very_good_cli][very_good_cli_link]:
+
+```sh
+dart pub global activate very_good_cli
+```
+
 To run all unit tests:
 
 ```sh
-dart pub global activate coverage 1.2.0
-dart test --coverage=coverage
-dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info
+very_good test --coverage
 ```
 
 To view the generated coverage report you can use [lcov](https://github.com/linux-test-project/lcov).
@@ -46,7 +50,7 @@ genhtml coverage/lcov.info -o coverage/
 open coverage/index.html
 ```
 
-[dart_install_link]: https://dart.dev/get-dart
+[flutter_install_link]: https://docs.flutter.dev/get-started/install
 [github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
@@ -55,6 +59,7 @@ open coverage/index.html
 [mason_link]: https://github.com/felangel/mason
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
+[very_good_cli_link]: https://pub.dev/packages/very_good_cli
 [very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
 [very_good_ventures_link]: https://verygood.ventures
 [very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
