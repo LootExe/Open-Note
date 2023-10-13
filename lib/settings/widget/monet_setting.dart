@@ -2,7 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_note/l10n/generated/l10n.dart';
-import 'package:open_note/settings/bloc/settings_bloc.dart';
+import 'package:open_note/settings/cubit/settings_cubit.dart';
 import 'package:open_note/settings/widget/widget.dart';
 import 'package:settings_repository/settings_repository.dart';
 
@@ -15,12 +15,12 @@ class MonetSetting extends StatelessWidget {
 
   void _onChanged(BuildContext context, Settings settings, bool value) {
     final changedSettings = settings.copyWith(useMaterialYou: value);
-    context.read<SettingsBloc>().add(SettingsChanged(changedSettings));
+    context.read<SettingsCubit>().save(changedSettings);
   }
 
-  bool _buildWhen(SettingsState previous, SettingsState current) =>
-      previous.settings.useMaterialYou != current.settings.useMaterialYou ||
-      previous.settings.language != current.settings.language;
+  bool _buildWhen(Settings previous, Settings current) =>
+      previous.useMaterialYou != current.useMaterialYou ||
+      previous.language != current.language;
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +32,16 @@ class MonetSetting extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            return BlocBuilder<SettingsBloc, SettingsState>(
+            return BlocBuilder<SettingsCubit, Settings>(
               buildWhen: _buildWhen,
-              builder: (context, state) => SwitchListTile(
+              builder: (context, settings) => SwitchListTile(
                 secondary: icon,
                 title: title,
                 subtitle: Text(
-                  _getMaterialColorText(state.settings.useMaterialYou),
+                  _getMaterialColorText(settings.useMaterialYou),
                 ),
-                value: state.settings.useMaterialYou,
-                onChanged: (value) =>
-                    _onChanged(context, state.settings, value),
+                value: settings.useMaterialYou,
+                onChanged: (value) => _onChanged(context, settings, value),
               ),
             );
           case ConnectionState.none:

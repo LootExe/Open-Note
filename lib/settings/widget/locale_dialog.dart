@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_note/common/utils.dart';
 import 'package:open_note/l10n/generated/l10n.dart';
-import 'package:open_note/settings/bloc/settings_bloc.dart';
+import 'package:open_note/settings/cubit/settings_cubit.dart';
 import 'package:settings_repository/settings_repository.dart';
 
 class LocaleDialog {
@@ -11,13 +11,13 @@ class LocaleDialog {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(S.of(context).settingLocaleLanguageButton),
-        content: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) => Column(
+        content: BlocBuilder<SettingsCubit, Settings>(
+          builder: (context, settings) => Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _buildRadioGroup(
               context: context,
-              settings: state.settings,
+              settings: settings,
             ),
           ),
         ),
@@ -31,7 +31,7 @@ class LocaleDialog {
   }) {
     void onChanged(String? value) {
       final changedSettings = settings.copyWith(language: () => value);
-      context.read<SettingsBloc>().add(SettingsChanged(changedSettings));
+      context.read<SettingsCubit>().save(changedSettings);
     }
 
     final values = _generateLanguageList();

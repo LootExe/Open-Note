@@ -6,6 +6,7 @@ import 'package:open_note/note_editor/view/note_editor_page.dart';
 import 'package:open_note/note_list/bloc/note_list_bloc.dart';
 import 'package:open_note/note_list/widget/widget.dart';
 import 'package:open_note/settings/settings.dart';
+import 'package:settings_repository/settings_repository.dart';
 
 class NoteListPage extends StatelessWidget {
   const NoteListPage({super.key});
@@ -24,9 +25,9 @@ class NoteListPage extends StatelessWidget {
 class NoteListView extends StatelessWidget {
   const NoteListView({super.key});
 
-  bool _buildWhen(SettingsState previous, SettingsState current) =>
-      previous.settings.noteSortMode != current.settings.noteSortMode ||
-      previous.settings.noteSortIds != current.settings.noteSortIds;
+  bool _buildWhen(Settings previous, Settings current) =>
+      previous.noteSortMode != current.noteSortMode ||
+      previous.noteSortIds != current.noteSortIds;
 
   Future<void> _onNotePressed(BuildContext context, Note note) async {
     final noteBloc = context.read<NoteListBloc>();
@@ -52,13 +53,13 @@ class NoteListView extends StatelessWidget {
             return const EmptyListInfo();
           }
 
-          return BlocBuilder<SettingsBloc, SettingsState>(
+          return BlocBuilder<SettingsCubit, Settings>(
             buildWhen: _buildWhen,
-            builder: (_, settingsState) => NoteList(
+            builder: (_, settings) => NoteList(
               padding: AppDesign.mainContentPadding,
               notes: notes,
-              sortMode: settingsState.settings.noteSortMode,
-              sortOrder: settingsState.settings.noteSortIds,
+              sortMode: settings.noteSortMode,
+              sortOrder: settings.noteSortIds,
               onNotePressed: (note) => _onNotePressed(context, note),
               onNoteDismissed: (id) => _onNoteDismissed(context, id),
             ),

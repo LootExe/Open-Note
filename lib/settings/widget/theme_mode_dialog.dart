@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_note/l10n/generated/l10n.dart';
-import 'package:open_note/settings/bloc/settings_bloc.dart';
+import 'package:open_note/settings/cubit/settings_cubit.dart';
 
 class ThemeModeDialog {
   static void show(BuildContext context) {
@@ -9,12 +9,10 @@ class ThemeModeDialog {
       context: context,
       builder: (context) {
         final l10n = S.of(context);
-        final settings = context.watch<SettingsBloc>().state.settings;
+        final settings = context.watch<SettingsCubit>().state;
 
-        void onChanged(ThemeMode? value) => context.read<SettingsBloc>().add(
-              SettingsChanged(
-                settings.copyWith(themeMode: value ?? ThemeMode.system),
-              ),
+        void onChanged(ThemeMode? value) => context.read<SettingsCubit>().save(
+              settings.copyWith(themeMode: value ?? ThemeMode.system),
             );
 
         return AlertDialog(

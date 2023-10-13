@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_note/config/app_config.dart';
 
-class ThemeConfig {
+sealed class ThemeConfig {
   ThemeConfig._();
 
   static const defaultLight = ColorScheme(

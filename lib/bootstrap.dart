@@ -10,8 +10,8 @@ import 'package:note_provider/note_provider.dart';
 import 'package:note_repository/note_repository.dart';
 import 'package:open_note/app/app.dart';
 import 'package:open_note/config/config.dart';
-import 'package:settings_provider/settings_provider.dart';
 import 'package:settings_repository/settings_repository.dart';
+import 'package:storage_provider/storage_provider.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -30,7 +30,7 @@ class AppBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap({
-  required SettingsProvider settingsProvider,
+  required StorageProvider settingsStorage,
   required NoteProvider noteProvider,
   required NoteBackupProvider backupProvider,
 }) async {
@@ -51,7 +51,9 @@ Future<void> bootstrap({
     DeviceOrientation.portraitDown,
   ]);
 
-  final settingsRepository = SettingsRepository(provider: settingsProvider);
+  final settingsRepository = SettingsRepository(provider: settingsStorage);
+  await settingsRepository.readSettings();
+
   final noteRepository = NoteRepository(
     noteProvider: noteProvider,
     backupProvider: backupProvider,

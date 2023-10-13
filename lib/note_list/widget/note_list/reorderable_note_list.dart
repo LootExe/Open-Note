@@ -35,9 +35,8 @@ class ReorderableNoteList extends StatelessWidget {
     newOrder.insert(index, noteId);
 
     // Save update sort Order.
-    final bloc = context.read<SettingsBloc>();
-    final settings = bloc.state.settings;
-    bloc.add(SettingsChanged(settings.copyWith(noteSortIds: newOrder)));
+    final cubit = context.read<SettingsCubit>();
+    cubit.save(cubit.state.copyWith(noteSortIds: newOrder));
   }
 
   List<String> _updateOrderList(List<String> order) {

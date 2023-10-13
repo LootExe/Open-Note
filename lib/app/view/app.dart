@@ -25,7 +25,7 @@ class App extends StatelessWidget {
     return RepositoryProvider.value(
       value: noteRepository,
       child: BlocProvider(
-        create: (_) => SettingsBloc(repository: settingsRepository),
+        create: (_) => SettingsCubit(repository: settingsRepository),
         child: const AppView(),
       ),
     );
@@ -45,34 +45,31 @@ class AppView extends StatelessWidget {
         : ThemeConfig.fromScheme(appDefault);
   }
 
-  bool _buildWhen(SettingsState previous, SettingsState current) {
-    final prevSettings = previous.settings;
-    final currSettings = current.settings;
-
-    return prevSettings.themeMode != currSettings.themeMode ||
-        prevSettings.useMaterialYou != currSettings.useMaterialYou ||
-        prevSettings.language != currSettings.language;
+  bool _buildWhen(Settings previous, Settings current) {
+    return previous.themeMode != current.themeMode ||
+        previous.useMaterialYou != current.useMaterialYou ||
+        previous.language != current.language;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc, SettingsState>(
+    return BlocBuilder<SettingsCubit, Settings>(
       buildWhen: _buildWhen,
-      builder: (context, state) => DynamicColorBuilder(
+      builder: (context, settings) => DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) {
-          final useMonet = state.settings.useMaterialYou;
+          final useMonet = settings.useMaterialYou;
           final light =
               _generateTheme(lightDynamic, ThemeConfig.defaultLight, useMonet);
           final dark =
               _generateTheme(darkDynamic, ThemeConfig.defaultDark, useMonet);
-          final language = state.settings.language;
+          final language = settings.language;
           final locale = parseLocale(language);
 
           return MaterialApp(
             // Theming.
             theme: light,
             darkTheme: dark,
-            themeMode: state.settings.themeMode,
+            themeMode: settings.themeMode,
             // Localization.
             localizationsDelegates: const [
               S.delegate,

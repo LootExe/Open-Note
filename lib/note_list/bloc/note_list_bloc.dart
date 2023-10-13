@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:note_repository/note_repository.dart';
 
 part 'note_list_state.dart';
@@ -56,17 +57,24 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
 
   Future<void> _onListExported(
     NoteListExported event,
-    Emitter<NoteListState> _,
+    Emitter<NoteListState> emit,
   ) async {
-    // TODO(Frank): Add success or failure
-    //await _repository.saveNotesToFile(event.directory);
+    final directory = await FilePicker.platform.getDirectoryPath();
+
+    if (directory == null) {
+      emit(state.copyWith(status: NoteListStatus.failure));
+    } else {
+      // TODO(Frank): Add success or failure
+      //await _repository.saveNotesToFile(file, notes);
+    }
   }
 
   Future<void> _onListImported(
     NoteListImported event,
-    Emitter<NoteListState> _,
+    Emitter<NoteListState> emit,
   ) async {
     // TODO(Frank): Add success or failure
+    // TODO(Frank): Move filePicker logic into bloc
     //await _repository.readNotesFromFile(event.filePath);
   }
 }
