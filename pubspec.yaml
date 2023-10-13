@@ -21,8 +21,6 @@ dependencies:
 
   local_note_provider:
     path: package/local_note_provider
-  local_settings_provider:
-    path: package/local_settings_provider
   note_backup_provider:
     path: package/note_backup_provider
   note_provider:
@@ -31,12 +29,15 @@ dependencies:
     path: package/note_repository
   settings_list:
     path: package/settings_list
-  settings_provider:
-    path: package/settings_provider
   settings_repository:
     path: package/settings_repository
-  
   share_plus: ^7.1.0
+  shared_preferences_storage:
+    path: package/shared_preferences_storage
+  
+  storage_provider:
+    path: package/storage_provider
+    
   url_launcher: ^6.1.9
 
 dev_dependencies:
