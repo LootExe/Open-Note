@@ -19,6 +19,7 @@ class MonetSetting extends StatelessWidget {
   }
 
   bool _buildWhen(Settings previous, Settings current) =>
+      previous.themeMode != current.themeMode ||
       previous.useMaterialYou != current.useMaterialYou ||
       previous.language != current.language;
 

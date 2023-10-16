@@ -10,7 +10,8 @@ class ThemeSetting extends StatelessWidget {
   const ThemeSetting({super.key});
 
   bool _buildWhen(Settings previous, Settings current) =>
-      previous.themeMode != current.themeMode;
+      previous.themeMode != current.themeMode ||
+      previous.useMaterialYou != current.useMaterialYou;
 
   @override
   Widget build(BuildContext context) {
