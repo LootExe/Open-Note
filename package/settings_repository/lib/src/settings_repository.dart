@@ -40,15 +40,15 @@ class SettingsRepository {
 
   /// Writes the [settings] to the storage provider.
   /// Returns a `Future` that completes once the settings have been written.
-  Future<void> writeSettings(Settings settings) async {
+  Future<void> writeSettings(Settings settings) {
     this.settings = settings.copyWith();
     return _provider.write(_kSettingsKey, json.encode(this.settings));
   }
 
-  /// Deletes the `Settings` from the storage provider and sets the [settings]
+  /// Clears the `Settings` from the storage provider and sets the [settings]
   /// to default value.
-  /// Returns a `Future` that completes once the settings have been deleted.
-  Future<void> clearSettings() async {
+  /// Returns a `Future` that completes once the storage has been cleared.
+  Future<void> clearSettings() {
     settings = const Settings();
     return _provider.delete(_kSettingsKey);
   }
