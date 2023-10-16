@@ -9,10 +9,12 @@ class LocaleDialog {
   static void show(BuildContext context) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).settingLocaleLanguageButton),
-        content: BlocBuilder<SettingsCubit, Settings>(
-          builder: (context, settings) => Column(
+      builder: (context) {
+        final settings = context.watch<SettingsCubit>().state;
+
+        return AlertDialog(
+          title: Text(S.of(context).settingLocaleLanguageButton),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _buildRadioGroup(
@@ -20,8 +22,8 @@ class LocaleDialog {
               settings: settings,
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
