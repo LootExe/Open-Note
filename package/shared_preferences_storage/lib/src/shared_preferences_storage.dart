@@ -12,11 +12,14 @@ class SharedPreferencesStorage implements StorageProvider {
   final SharedPreferences _preferences;
 
   @override
+  Future<Set<String>?> readKeys() => Future.value(_preferences.getKeys());
+
+  @override
   Future<String?> read(String key) => Future.value(_preferences.getString(key));
 
   @override
-  Future<void> write(String key, String data) =>
-      _preferences.setString(key, data);
+  Future<void> write(String key, String value) =>
+      _preferences.setString(key, value);
 
   @override
   Future<void> delete(String key) => _preferences.remove(key);
@@ -24,8 +27,7 @@ class SharedPreferencesStorage implements StorageProvider {
   @override
   Future<void> clear() => _preferences.clear();
 
+  /// Does nothing with SharedPreferences.
   @override
-  Future<void> close() async {
-    /// Does nothing with SharedPreferences.
-  }
+  Future<void> close() => Future.value();
 }

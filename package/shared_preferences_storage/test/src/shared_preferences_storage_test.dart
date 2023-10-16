@@ -14,6 +14,7 @@ void main() {
 
     setUp(() {
       preferences = MockSharedPreferences();
+      when(() => preferences.getKeys()).thenReturn({testKey});
       when(() => preferences.getString(any())).thenReturn(testValue);
       when(() => preferences.setString(any(), any()))
           .thenAnswer((_) async => true);
@@ -32,20 +33,30 @@ void main() {
         );
       });
 
+      group('readKeys', () {
+        test('with existing keys if present', () {
+          expect(createSubject().readKeys(), completion({testKey}));
+          verify(() => preferences.getKeys()).called(1);
+        });
+
+        test('with empty set if no keys are present', () {
+          when(() => preferences.getKeys()).thenReturn({});
+
+          expect(createSubject().readKeys(), completion(<String>{}));
+          verify(() => preferences.getKeys()).called(1);
+        });
+      });
+
       group('read', () {
         test('with existing value if present', () {
-          final subject = createSubject();
-
-          expect(subject.read(testKey), completion(equals(testValue)));
+          expect(createSubject().read(testKey), completion(testValue));
           verify(() => preferences.getString(testKey)).called(1);
         });
 
         test('with null value if nothing is saved', () {
           when(() => preferences.getString(any())).thenReturn(null);
 
-          final subject = createSubject();
-
-          expect(subject.read(testKey), completion(isNull));
+          expect(createSubject().read(testKey), completion(isNull));
           verify(() => preferences.getString(testKey)).called(1);
         });
       });
@@ -53,36 +64,28 @@ void main() {
 
     group('write', () {
       test('write value completes normally', () {
-        final subject = createSubject();
-
-        expect(subject.write(testKey, testValue), completes);
+        expect(createSubject().write(testKey, testValue), completes);
         verify(() => preferences.setString(testKey, testValue)).called(1);
       });
     });
 
     group('delete', () {
       test('delete value completes normally', () {
-        final subject = createSubject();
-
-        expect(subject.delete(testKey), completes);
+        expect(createSubject().delete(testKey), completes);
         verify(() => preferences.remove(testKey)).called(1);
       });
     });
 
     group('clear', () {
       test('clear preferences completes normally', () {
-        final subject = createSubject();
-
-        expect(subject.clear(), completes);
+        expect(createSubject().clear(), completes);
         verify(() => preferences.clear()).called(1);
       });
     });
 
     group('close', () {
       test('completes normally', () {
-        final subject = createSubject();
-
-        expect(subject.close(), completes);
+        expect(createSubject().close(), completes);
       });
     });
   });

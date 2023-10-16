@@ -1,6 +1,6 @@
 name: shared_preferences_storage
 description: A Shared Preferences implementation of the StorageProvider interface
-version: 0.1.0+1
+version: 1.0.0+1
 publish_to: none
 
 environment:
