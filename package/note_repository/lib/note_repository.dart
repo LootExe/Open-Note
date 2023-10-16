@@ -1,10 +1,5 @@
-/// A repository that handles note related requests.
+/// A repository that handles note requests
 library note_repository;
 
-export 'package:note_provider/note_provider.dart' show Note;
-export 'package:note_provider/note_provider.dart' show TextNote;
-export 'package:note_provider/note_provider.dart' show TodoNote;
-export 'package:note_provider/note_provider.dart' show TodoItem;
-export 'package:note_provider/note_provider.dart' show NoteNotFoundException;
-
+export 'src/model/note.dart';
 export 'src/note_repository.dart';

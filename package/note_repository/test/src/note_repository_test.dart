@@ -1,22 +1,16 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:convert';
+
 import 'package:mocktail/mocktail.dart';
-import 'package:note_backup_provider/note_backup_provider.dart';
-import 'package:note_provider/note_provider.dart';
 import 'package:note_repository/note_repository.dart';
+import 'package:storage_provider/storage_provider.dart';
 import 'package:test/test.dart';
 
-class MockNoteProvider extends Mock implements NoteProvider {}
-
-class MockBackupProvider extends Mock implements NoteBackupProvider {}
-
-class FakeNote extends Fake implements Note {}
+class MockStorageProvider extends Mock implements StorageProvider {}
 
 void main() {
   group('NoteRepository', () {
-    late NoteProvider noteProvider;
-    late NoteBackupProvider backupProvider;
-
-    const file = 'test/notes.txt';
+    late StorageProvider provider;
 
     final notes = [
       TextNote(
@@ -39,92 +33,131 @@ void main() {
       ),
     ];
 
-    setUpAll(() {
-      registerFallbackValue(FakeNote());
-    });
-
     setUp(() {
-      noteProvider = MockNoteProvider();
-      backupProvider = MockBackupProvider();
-
-      when(() => noteProvider.readNotes())
-          .thenAnswer((_) => Future.value(notes));
-      when(() => noteProvider.saveNote(any())).thenAnswer((_) async {});
-      when(() => noteProvider.deleteNote(any())).thenAnswer((_) async {});
-      when(() => backupProvider.readNotes(any()))
-          .thenAnswer((_) => Future.value(notes));
-      when(() => backupProvider.saveNotes(any(), any()))
-          .thenAnswer((_) async {});
+      provider = MockStorageProvider();
+      when(() => provider.read(notes[0].id))
+          .thenAnswer((_) => Future.value(json.encode(notes[0])));
+      when(() => provider.read(notes[1].id))
+          .thenAnswer((_) => Future.value(json.encode(notes[1])));
+      when(() => provider.read(notes[2].id))
+          .thenAnswer((_) => Future.value(json.encode(notes[2])));
+      when(() => provider.readKeys())
+          .thenAnswer((_) => Future.value({'1', '2', '3'}));
+      when(() => provider.write(any(), any())).thenAnswer((_) async {});
+      when(() => provider.clear()).thenAnswer((_) async {});
     });
 
-    NoteRepository createSubject() => NoteRepository(
-          noteProvider: noteProvider,
-          backupProvider: backupProvider,
-        );
+    NoteRepository createSubject() => NoteRepository(provider: provider);
 
     group('constructor', () {
       test('works properly', () {
-        expect(
-          createSubject,
-          returnsNormally,
-        );
+        expect(createSubject, returnsNormally);
       });
     });
 
     group('readNotes', () {
-      test('makes correct provider request', () {
-        expect(
-          createSubject().readNotes(),
-          completion(equals(notes)),
-        );
+      test('returns empty list if storage is empty', () {
+        when(() => provider.readKeys()).thenAnswer((_) => Future.value());
 
-        verify(() => noteProvider.readNotes()).called(1);
+        expect(createSubject().readNotes(), completion([]));
+
+        verify(() => provider.readKeys()).called(1);
+        verifyNever(() => provider.read(any()));
+      });
+
+      test('returns correct notes from storage', () async {
+        final readNotes = await createSubject().readNotes();
+
+        expect(readNotes, notes);
+
+        verify(() => provider.readKeys()).called(1);
+        verify(() => provider.read(any())).called(3);
+      });
+
+      test('skips notes that have no data', () async {
+        when(() => provider.read(notes[1].id))
+            .thenAnswer((_) => Future.value());
+
+        final readNotes = await createSubject().readNotes();
+
+        expect(readNotes, [notes[0], notes[2]]);
+
+        verify(() => provider.readKeys()).called(1);
+        verify(() => provider.read(any())).called(3);
+      });
+
+      test('skips notes with empty json data', () async {
+        when(() => provider.read(notes[1].id))
+            .thenAnswer((_) => Future.value(''));
+
+        final readNotes = await createSubject().readNotes();
+
+        expect(readNotes, [notes[0], notes[2]]);
+
+        verify(() => provider.readKeys()).called(1);
+        verify(() => provider.read(any())).called(3);
+      });
+
+      test('skips notes with corrupted json data', () async {
+        when(() => provider.read(notes[1].id))
+            .thenAnswer((_) => Future.value('ooops'));
+
+        final readNotes = await createSubject().readNotes();
+
+        expect(readNotes, [notes[0], notes[2]]);
+
+        verify(() => provider.readKeys()).called(1);
+        verify(() => provider.read(any())).called(3);
+      });
+
+      test('updates public member `notes`', () async {
+        final subject = createSubject();
+        expect(subject.notes, <String>[]);
+
+        await subject.readNotes();
+
+        expect(subject.notes, notes);
+
+        verify(() => provider.readKeys()).called(1);
+        verify(() => provider.read(any())).called(3);
       });
     });
 
-    group('saveNote', () {
-      test('makes correct provider request', () {
-        final newNote = TextNote(
-          id: '4',
-          title: 'note 4',
-          content: 'content 4',
-        );
+    group('writeNotes', () {
+      test('makes correct provider request', () async {
+        await createSubject().writeNotes(notes);
 
+        //expect(result, completes);
+        verify(() => provider.write(any(), any())).called(3);
+      });
+
+      test('updates public member `notes`', () async {
         final subject = createSubject();
+        expect(subject.notes, <String>[]);
 
-        expect(subject.saveNote(newNote), completes);
+        await subject.writeNotes(notes);
 
-        verify(() => noteProvider.saveNote(newNote)).called(1);
+        expect(subject.notes, notes);
+        verify(() => provider.write(any(), any())).called(3);
       });
     });
 
-    group('deleteNote', () {
+    group('clearNotes', () {
       test('makes correct provider request', () {
-        final subject = createSubject();
-
-        expect(subject.deleteNote(notes[0].id), completes);
-
-        verify(() => noteProvider.deleteNote(notes[0].id)).called(1);
+        expect(createSubject().clearNotes(), completes);
+        verify(() => provider.clear()).called(1);
       });
-    });
 
-    group('readNotesFromFile', () {
-      test('makes correct provider request', () {
+      test('updates public member `notes`', () async {
         final subject = createSubject();
+        await subject.readNotes();
 
-        expect(subject.readNotesFromFile(file), completion(equals(notes)));
+        expect(subject.notes, notes);
 
-        verify(() => backupProvider.readNotes(file)).called(1);
-      });
-    });
+        await subject.clearNotes();
 
-    group('saveNotesToFile', () {
-      test('makes correct provider request', () {
-        final subject = createSubject();
-
-        expect(subject.saveNotesToFile(file, notes), completes);
-
-        verify(() => backupProvider.saveNotes(file, notes)).called(1);
+        expect(subject.notes, <String>[]);
+        verify(() => provider.clear()).called(1);
       });
     });
   });

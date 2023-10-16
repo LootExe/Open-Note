@@ -1,41 +1,68 @@
-import 'package:note_backup_provider/note_backup_provider.dart';
-import 'package:note_provider/note_provider.dart';
+import 'dart:convert';
+
+import 'package:note_repository/src/model/note.dart';
+import 'package:storage_provider/storage_provider.dart';
 
 /// {@template note_repository}
-/// A repository that handles note related requests.
+/// A repository that handles note requests
 /// {@endtemplate}
 class NoteRepository {
   /// {@macro note_repository}
-  const NoteRepository({
-    required NoteProvider noteProvider,
-    required NoteBackupProvider backupProvider,
-  })  : _noteProvider = noteProvider,
-        _backupProvider = backupProvider;
+  NoteRepository({required StorageProvider provider})
+      : _provider = provider,
+        notes = <Note>[];
 
-  final NoteProvider _noteProvider;
-  final NoteBackupProvider _backupProvider;
+  final StorageProvider _provider;
 
-  /// Read all notes from the provider.
-  /// Returns a `Future<List<Note>>` that completes once the notes are read.
-  Future<List<Note>> readNotes() => _noteProvider.readNotes();
+  /// List of `Note`. Load them via `readNotes()`.
+  final List<Note> notes;
 
-  /// Saves a new [Note] or updates an existing one.
-  /// Returns a `Future` that completes once the saving is complete.
-  Future<void> saveNote(Note note) => _noteProvider.saveNote(note);
+  /// Read the `List<Note>` from the storage provider.
+  /// Stores them in [notes].
+  /// Returns a `Future` that completes once the notes have been read.
+  Future<List<Note>> readNotes() async {
+    notes.clear();
+    final keys = await _provider.readKeys() ?? {};
 
-  /// Deletes a [Note] with the given [id].
-  /// If no note with the given id exists, a [NoteNotFoundException]
-  /// error is thrown.
-  Future<void> deleteNote(String id) => _noteProvider.deleteNote(id);
+    for (final key in keys) {
+      final value = await _provider.read(key);
 
-  /// Read all notes from a file.
-  /// Returns a `Future<List<Note>>` that completes once
-  /// the file content has been read.
-  Future<List<Note>> readNotesFromFile(String file) =>
-      _backupProvider.readNotes(file);
+      if (value == null || value.isEmpty) {
+        continue;
+      }
 
-  /// Save all notes to a file.
-  /// Returns a `Future` that completes once the file content has been written.
-  Future<void> saveNotesToFile(String file, List<Note> notes) =>
-      _backupProvider.saveNotes(file, notes);
+      try {
+        final jsonObject = json.decode(value) as JsonMap;
+
+        if (jsonObject.containsKey('content')) {
+          notes.add(TextNote.fromJson(jsonObject));
+        } else if (jsonObject.containsKey('items')) {
+          notes.add(TodoNote.fromJson(jsonObject));
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+
+    return notes;
+  }
+
+  /// Write the [notes] to the storage provider.
+  /// Returns a `Future` that completes once the notes have been written.
+  Future<void> writeNotes(List<Note> notes) async {
+    this.notes.clear();
+    this.notes.addAll(notes);
+
+    for (final note in notes) {
+      final value = json.encode(note);
+      await _provider.write(note.id, value);
+    }
+  }
+
+  /// Clears all notes from the storage provider.
+  /// Returns a `Future` that completes once the storage has been cleared.
+  Future<void> clearNotes() {
+    notes.clear();
+    return _provider.clear();
+  }
 }
