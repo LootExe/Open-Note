@@ -31,6 +31,10 @@ class HiveStorage implements StorageProvider {
   }
 
   @override
+  Future<Set<String>?> readKeys() async =>
+      _box.isOpen ? Set<String>.from(_box.keys) : null;
+
+  @override
   Future<String?> read(String key) async => _box.isOpen ? _box.get(key) : null;
 
   @override

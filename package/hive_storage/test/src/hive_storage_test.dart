@@ -65,6 +65,7 @@ void main() {
       setUp(() {
         box = MockBox();
         when(() => box.isOpen).thenReturn(true);
+        when(() => box.keys).thenReturn({key});
         when(() => box.get(any<String>())).thenReturn(value);
         when(() => box.put(any<String>(), any<String>()))
             .thenAnswer((_) async {});
@@ -74,15 +75,27 @@ void main() {
         storage = HiveStorage(box: box);
       });
 
-      group('read', () {
+      group('readKeys', () {
         test('returns null when box is not open', () {
           when(() => box.isOpen).thenReturn(false);
 
+          expect(storage.readKeys(), completion(isNull));
+        });
+
+        test('returns correct keys when box is open', () {
+          expect(storage.readKeys(), completion({key}));
+          verify(() => box.keys).called(1);
+        });
+      });
+
+      group('read', () {
+        test('returns null when box is not open', () {
+          when(() => box.isOpen).thenReturn(false);
           expect(storage.read(key), completion(isNull));
         });
 
         test('returns correct value when box is open', () {
-          expect(storage.read(key), completion(equals(value)));
+          expect(storage.read(key), completion(value));
           verify(() => box.get(key)).called(1);
         });
       });
