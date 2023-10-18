@@ -12,8 +12,7 @@ void main() {
   group('HiveStorage', () {
     late HiveStorage storage;
 
-    final cwd = Directory.current.absolute.path;
-    final storageDirectory = Directory(cwd);
+    final storageDirectory = Directory.current.absolute;
 
     tearDown(() async {
       await storage.clear();
@@ -24,34 +23,24 @@ void main() {
 
     group('build', () {
       setUp(() async {
-        final storage = await HiveStorage.build(
-          storageDirectory: storageDirectory,
-        );
+        final storage = await HiveStorage.build(storageDirectory);
         await storage.clear();
         await storage.close();
       });
 
       test('reuses existing instance when called multiple times', () async {
-        final instanceA = storage = await HiveStorage.build(
-          storageDirectory: storageDirectory,
-        );
-        final instanceB = await HiveStorage.build(
-          storageDirectory: storageDirectory,
-        );
+        final instanceA = storage = await HiveStorage.build(storageDirectory);
+        final instanceB = await HiveStorage.build(storageDirectory);
 
         expect(instanceA, instanceB);
       });
 
       test('creates new instance if storage was closed', () async {
-        final instanceA = await HiveStorage.build(
-          storageDirectory: storageDirectory,
-        );
+        final instanceA = await HiveStorage.build(storageDirectory);
 
         await instanceA.close();
 
-        final instanceB = storage = await HiveStorage.build(
-          storageDirectory: storageDirectory,
-        );
+        final instanceB = storage = await HiveStorage.build(storageDirectory);
 
         expect(instanceA, isNot(instanceB));
       });

@@ -17,7 +17,7 @@ class HiveStorage implements StorageProvider {
   final Box<String> _box;
 
   /// Returns an instance of `HiveStorage`.
-  static Future<HiveStorage> build({required Directory storageDirectory}) {
+  static Future<HiveStorage> build(Directory storageDirectory) {
     return _lock.synchronized(() async {
       if (_instance != null) {
         return _instance!;
