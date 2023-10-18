@@ -17,16 +17,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_speed_dial: ^7.0.0
+  hive_storage:
+    path: package/hive_storage
   intl: ^0.18.0
 
-  local_note_provider:
-    path: package/local_note_provider
-  note_backup_provider:
-    path: package/note_backup_provider
-  note_provider:
-    path: package/note_provider
   note_repository:
     path: package/note_repository
+  path_provider: ^2.1.1
   settings_list:
     path: package/settings_list
   settings_repository:

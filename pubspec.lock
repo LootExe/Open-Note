@@ -365,6 +365,21 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  hive:
+    dependency: transitive
+    description:
+      name: hive
+      sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
+  hive_storage:
+    dependency: "direct main"
+    description:
+      path: "package/hive_storage"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   http_multi_server:
     dependency: transitive
     description:
@@ -429,13 +444,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  local_note_provider:
-    dependency: "direct main"
-    description:
-      path: "package/local_note_provider"
-      relative: true
-    source: path
-    version: "1.0.0+1"
   logging:
     dependency: transitive
     description:
@@ -500,27 +508,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  note_backup_provider:
-    dependency: "direct main"
-    description:
-      path: "package/note_backup_provider"
-      relative: true
-    source: path
-    version: "1.0.0+1"
-  note_provider:
-    dependency: "direct main"
-    description:
-      path: "package/note_provider"
-      relative: true
-    source: path
-    version: "1.0.0+1"
   note_repository:
     dependency: "direct main"
     description:
       path: "package/note_repository"
       relative: true
     source: path
-    version: "1.0.0+1"
+    version: "0.1.0+1"
   package_config:
     dependency: transitive
     description:
@@ -538,7 +532,7 @@ packages:
     source: hosted
     version: "1.8.3"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: a1aa8aaa2542a6bc57e381f132af822420216c80d4781f7aa085ca3229208aaa
@@ -725,7 +719,7 @@ packages:
       path: "package/shared_preferences_storage"
       relative: true
     source: path
-    version: "0.1.0+1"
+    version: "1.0.0+1"
   shared_preferences_web:
     dependency: transitive
     description:
@@ -842,6 +836,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:

@@ -5,8 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:note_backup_provider/note_backup_provider.dart';
-import 'package:note_provider/note_provider.dart';
 import 'package:note_repository/note_repository.dart';
 import 'package:open_note/app/app.dart';
 import 'package:open_note/config/config.dart';
@@ -31,8 +29,7 @@ class AppBlocObserver extends BlocObserver {
 
 Future<void> bootstrap({
   required StorageProvider settingsStorage,
-  required NoteProvider noteProvider,
-  required NoteBackupProvider backupProvider,
+  required StorageProvider noteStorage,
 }) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
@@ -55,9 +52,9 @@ Future<void> bootstrap({
   await settingsRepository.readSettings();
 
   final noteRepository = NoteRepository(
-    noteProvider: noteProvider,
-    backupProvider: backupProvider,
+    provider: noteStorage,
   );
+  await noteRepository.readNotes();
 
   runApp(
     App(
