@@ -14,9 +14,7 @@ class NoteListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => NoteListBloc(
-        repository: context.read<NoteRepository>(),
-      )..add(const NoteListLoaded()),
+      create: (_) => NoteListBloc(repository: context.read<NoteRepository>()),
       child: const NoteListView(),
     );
   }
@@ -34,7 +32,7 @@ class NoteListView extends StatelessWidget {
 
     await Navigator.of(context).push(NoteEditorPage.route(note));
 
-    noteBloc.add(const NoteListLoaded());
+    noteBloc.add(const NoteListChanged());
   }
 
   void _onNoteDismissed(BuildContext context, String id) =>

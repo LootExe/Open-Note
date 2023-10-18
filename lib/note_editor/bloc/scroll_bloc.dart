@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+// TODO(Frank): Only used for appBar title. Change to title_cubit?
 class ScrollBloc extends Bloc<ScrollEvent, ScrollState> {
   ScrollBloc() : super(const ScrollState(titleVisible: true)) {
     on<ScrollContentScrolled>(_onContentScrolled);

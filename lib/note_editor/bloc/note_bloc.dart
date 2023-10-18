@@ -42,7 +42,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     _cachedNote = _cachedNote.copyWith(editTime: DateTime.now());
     _originalNote = _cachedNote.copyWith();
 
-    await _repository.saveNote(_cachedNote);
+    await _repository.writeNote(_cachedNote);
     emit(state.copyWith(note: _cachedNote));
   }
 
@@ -50,13 +50,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     NoteDeleted event,
     Emitter<NoteState> emit,
   ) async {
-    try {
-      await _repository.deleteNote(_cachedNote.id);
-      // Only fires if a new note is deleted.
-      // ignore: unused_catch_clause
-    } on NoteNotFoundException {
-      // Note is a freshly created note that isn't saved yet.
-    }
+    await _repository.deleteNote(_cachedNote.id);
   }
 
   void _onNoteCleared(NoteCleared event, Emitter<NoteState> emit) {

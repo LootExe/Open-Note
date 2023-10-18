@@ -22,7 +22,7 @@ class HomeMenu extends StatelessWidget {
     }
 
     await Navigator.of(context).push(NoteEditorPage.route(note));
-    bloc.add(const NoteListLoaded());
+    bloc.add(const NoteListChanged());
   }
 
   @override

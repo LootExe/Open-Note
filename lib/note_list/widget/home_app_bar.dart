@@ -21,7 +21,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
 
     await Navigator.of(context).push(SettingsPage.route());
 
-    bloc.add(const NoteListLoaded());
+    bloc.add(const NoteListChanged());
   }
 
   @override

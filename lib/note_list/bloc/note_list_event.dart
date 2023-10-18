@@ -4,8 +4,8 @@ sealed class NoteListEvent extends Equatable {
   const NoteListEvent();
 }
 
-final class NoteListLoaded extends NoteListEvent {
-  const NoteListLoaded();
+final class NoteListChanged extends NoteListEvent {
+  const NoteListChanged();
 
   @override
   List<Object?> get props => [];
@@ -19,7 +19,7 @@ final class NoteListItemDeleted extends NoteListEvent {
   @override
   List<Object?> get props => [noteId];
 }
-
+/* 
 final class NoteListExported extends NoteListEvent {
   const NoteListExported(this.directory);
 
@@ -36,4 +36,4 @@ final class NoteListImported extends NoteListEvent {
 
   @override
   List<Object?> get props => [filePath];
-}
+} */
