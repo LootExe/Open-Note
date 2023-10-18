@@ -160,5 +160,48 @@ void main() {
         verify(() => provider.clear()).called(1);
       });
     });
+
+    group('writeNote', () {
+      test('adds new note if current note does not exists in notes', () {
+        final newNote = TextNote(
+          id: '11',
+          title: 'newNote',
+          content: 'newContent',
+        );
+
+        expect(createSubject().writeNote(newNote), completes);
+        verify(() => provider.write(any(), any())).called(1);
+      });
+
+      test('updates note if note already exists', () {
+        final subject = createSubject();
+        subject.notes.addAll(notes);
+
+        final changedNote = notes[0].copyWith(title: 'updatedTitle');
+
+        expect(subject.writeNote(changedNote), completes);
+        expect(subject.notes[0], changedNote);
+      });
+    });
+
+    group('deleteNote', () {
+      test('deletes note if note exists', () {
+        final subject = createSubject();
+        subject.notes.addAll(notes);
+
+        expect(subject.deleteNote(notes[0].id), completes);
+        expect(subject.notes.length, 2);
+      });
+
+      test('does nothing if note does not exists', () {
+        final subject = createSubject();
+        subject.notes.addAll(notes);
+
+        expect(subject.deleteNote('random ID'), completes);
+        expect(subject.notes.length, 3);
+
+        verifyNever(() => provider.write(any(), any()));
+      });
+    });
   });
 }
